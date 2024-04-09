@@ -4,6 +4,7 @@ from product.models import TimeStampedModel
 
 # Create your models here.
 
+
 class Invoice(TimeStampedModel):
     UNPAID = "unpaid"
     UNDERPAID = "underpaid"
