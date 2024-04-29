@@ -1,7 +1,6 @@
 import os
 import re
 import time
-from msilib.schema import File
 
 import magic
 from django.core.files.storage import default_storage
@@ -46,7 +45,7 @@ class CreateFileSerializer(serializers.ModelSerializer):
 
         file.seek(0)
         file_mime = magic.from_buffer(file.read(), mime=True)
-        file_obj = File.objects.create(
+        file_obj = FileObject.objects.create(
             original_file_name=file.name,
             mime_type=file_mime,
             size=file.size,
