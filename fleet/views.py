@@ -1,9 +1,13 @@
 from django.shortcuts import get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.exceptions import NotFound
+from rest_framework.filters import SearchFilter
 from rest_framework.generics import ListAPIView
 
 from accounts.decorators import authenticate_view
+from fleet.filters import MachineFilter
 from fleet_commerce.mixin import BaseApiMixin
+from pagination import StandardResultsPagination
 
 from .models import (
     FitnessDetail,
@@ -32,14 +36,31 @@ from .serializers import (
 
 
 class MachineView(BaseApiMixin, ListAPIView):
+    queryset = Machine.objects.all()
+    serializer_class = MachineSerializer
+    filter_backends = [DjangoFilterBackend, SearchFilter]
+    filterset_class = MachineFilter
+    search_fields = ["machine_number", "engine_number", "chasis_number", "make_and_model"]
+    pagination_class = StandardResultsPagination
+
     @authenticate_view
     def get(self, request, *args, **kwargs):
         """
         Retrieves a single Machine instance by its ID.
         """
-        machine = get_object_or_404(Machine, pk=kwargs.get("pk"))
-        serializer = MachineSerializer(machine)
-        return self.successful_get_response(serializer.data)
+        pk = kwargs.get("pk", None)
+        if pk:
+            machine = get_object_or_404(Machine, pk=pk)
+            serializer = MachineSerializer(machine)
+            return self.successful_get_response(serializer.data)
+        else:
+            queryset = self.filter_queryset(self.get_queryset())
+            page = self.paginate_queryset(queryset)
+            if page is not None:
+                serializer = MachineSerializer(page, many=True)
+                return self.get_paginated_response(serializer.data)
+
+            return self.get_paginated_response([])
 
     @authenticate_view
     def post(self, request, *args, **kwargs):

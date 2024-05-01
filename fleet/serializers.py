@@ -98,8 +98,8 @@ class MachineSerializer(serializers.ModelSerializer):
         return FitnessDetailSerializer(fitnesses, many=True).data
 
     def get_purchase_details(self, obj):
-        purchasedetails = obj.purchasedetails
-        if purchasedetails:
+        if hasattr(obj, "purchasedetails"):
+            purchasedetails = obj.purchasedetails
             return PurchaseDetailsSerializer(purchasedetails).data
 
     def get_loan_details(self, obj):
