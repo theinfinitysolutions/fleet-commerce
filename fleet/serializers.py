@@ -103,18 +103,18 @@ class MachineSerializer(serializers.ModelSerializer):
             return PurchaseDetailsSerializer(purchasedetails).data
 
     def get_loan_details(self, obj):
-        loandetails = obj.loandetails
-        if loandetails:
+        if hasattr(obj, "loandetails"):
+            loandetails = obj.loandetails
             return LoanDetailsSerializer(loandetails).data
 
     def get_puc_details(self, obj):
-        pucdetails = obj.pucdetails
-        if pucdetails:
+        if hasattr(obj, "pucdetails"):
+            pucdetails = obj.pucdetails
             return PUCDetailSerializer(pucdetails).data
 
     def get_rc_book_details(self, obj):
-        rcbookdetails = obj.rcbookdetails
-        if rcbookdetails:
+        if hasattr(obj, "rcbookdetails"):
+            rcbookdetails = obj.rcbookdetails
             return RCBookDetailSerializer(rcbookdetails).data
 
     def get_vehicle_image(self, obj):
