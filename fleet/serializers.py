@@ -71,29 +71,30 @@ class RCBookDetailSerializer(serializers.ModelSerializer):
 
 
 class MachineSerializer(serializers.ModelSerializer):
-    location = serializers.SerializerMethodField()
-    insurance = serializers.SerializerMethodField()
-    tyre = serializers.SerializerMethodField()
-    fitness = serializers.SerializerMethodField()
+    locations = serializers.SerializerMethodField()
+    insurances = serializers.SerializerMethodField()
+    tyres = serializers.SerializerMethodField()
+    fitnesses = serializers.SerializerMethodField()
     vehicle_image = serializers.SerializerMethodField()
     purchase_details = serializers.SerializerMethodField()
     loan_details = serializers.SerializerMethodField()
     puc_details = serializers.SerializerMethodField()
     rc_book_details = serializers.SerializerMethodField()
+    vehicle_image = FileObjectSerializer(allow_null=True)
 
-    def get_location(self, obj):
+    def get_locations(self, obj):
         locations = obj.locationdetail_set.filter(is_deleted=False).all()
         return LocationDetailSerializer(locations, many=True).data
 
-    def get_insurance(self, obj):
+    def get_insurances(self, obj):
         insurances = obj.insurancedetail_set.filter(is_deleted=False).all()
         return InsuranceDetailSerializer(insurances, many=True).data
 
-    def get_tyre(self, obj):
+    def get_tyres(self, obj):
         tyres = obj.tyredetail_set.filter(is_deleted=False).all()
         return TyreDetailSerializer(tyres, many=True).data
 
-    def get_fitness(self, obj):
+    def get_fitnesses(self, obj):
         fitnesses = obj.fitnessdetail_set.filter(is_deleted=False).all()
         return FitnessDetailSerializer(fitnesses, many=True).data
 
