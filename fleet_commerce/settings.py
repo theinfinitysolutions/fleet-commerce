@@ -21,8 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 import os
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ["*"]
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 DEBUG = True
 
@@ -38,6 +37,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "rest_framework.authtoken",
+    "corsheaders",
     "accounts",
     "billing",
     "product",
@@ -53,7 +53,11 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
 ]
+
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [

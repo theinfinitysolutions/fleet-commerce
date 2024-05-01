@@ -17,10 +17,6 @@ class Machine(TimeStampedModel):
     asset_type = models.CharField(max_length=100, blank=True, null=True)
     machine_type = models.CharField(max_length=100, blank=True, null=True)
     vehicle_image = models.ForeignKey("utils.FileObject", null=True, on_delete=models.SET_NULL)
-    locations = models.ManyToManyField("LocationDetail", blank=True)
-    insurances = models.ManyToManyField("InsuranceDetail", blank=True)
-    tyres = models.ManyToManyField("TyreDetail", blank=True)
-    fitnesses = models.ManyToManyField("FitnessDetail", blank=True)
 
 
 class PurchaseDetails(TimeStampedModel):
@@ -57,6 +53,7 @@ class LoanDetails(TimeStampedModel):
 
 
 class LocationDetail(TimeStampedModel):
+    machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
     location = models.CharField(max_length=100, blank=True, null=True)
     supervisor = models.CharField(max_length=100, blank=True, null=True)
     from_date = models.DateField()
@@ -64,6 +61,7 @@ class LocationDetail(TimeStampedModel):
 
 
 class InsuranceDetail(TimeStampedModel):
+    machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
     insurance_company = models.CharField(max_length=100, blank=True, null=True)
     policy_number = models.CharField(max_length=100, blank=True, null=True)
     policy_start_date = models.DateField()
@@ -74,6 +72,7 @@ class InsuranceDetail(TimeStampedModel):
 
 
 class TyreDetail(TimeStampedModel):
+    machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
     tyre_number = models.CharField(max_length=100, blank=True, null=True)
     from_date = models.DateField()
     meter_reading = models.CharField(max_length=100, blank=True, null=True)
@@ -81,6 +80,7 @@ class TyreDetail(TimeStampedModel):
 
 
 class FitnessDetail(TimeStampedModel):
+    machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
     fitness_certificate_number = models.CharField(max_length=100, blank=True, null=True)
     fitness_certificate_date = models.DateField()
     fitness_certificate_expiry_date = models.DateField()

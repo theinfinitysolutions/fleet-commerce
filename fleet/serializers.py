@@ -71,31 +71,51 @@ class RCBookDetailSerializer(serializers.ModelSerializer):
 
 
 class MachineSerializer(serializers.ModelSerializer):
-    location_ids = serializers.PrimaryKeyRelatedField(
-        many=True,
-        queryset=LocationDetail.objects.all(),
-        source="locations",
-        required=False,
-    )
-    insurance_ids = serializers.PrimaryKeyRelatedField(
-        many=True,
-        queryset=InsuranceDetail.objects.all(),
-        source="insurances",
-        required=False,
-    )
-    tyre_ids = serializers.PrimaryKeyRelatedField(
-        many=True,
-        queryset=TyreDetail.objects.all(),
-        source="tyres",
-        required=False,
-    )
-    fitness_ids = serializers.PrimaryKeyRelatedField(
-        many=True,
-        queryset=FitnessDetail.objects.all(),
-        source="fitnesses",
-        required=False,
-    )
+    location = serializers.SerializerMethodField()
+    insurance = serializers.SerializerMethodField()
+    tyre = serializers.SerializerMethodField()
+    fitness = serializers.SerializerMethodField()
     vehicle_image = serializers.SerializerMethodField()
+    purchase_details = serializers.SerializerMethodField()
+    loan_details = serializers.SerializerMethodField()
+    puc_details = serializers.SerializerMethodField()
+    rc_book_details = serializers.SerializerMethodField()
+
+    def get_location(self, obj):
+        locations = obj.locationdetail_set.all()
+        return LocationDetailSerializer(locations, many=True).data
+
+    def get_insurance(self, obj):
+        insurances = obj.insurancedetail_set.all()
+        return InsuranceDetailSerializer(insurances, many=True).data
+
+    def get_tyre(self, obj):
+        tyres = obj.tyredetail_set.all()
+        return TyreDetailSerializer(tyres, many=True).data
+
+    def get_fitness(self, obj):
+        fitnesses = obj.fitnessdetail_set.all()
+        return FitnessDetailSerializer(fitnesses, many=True).data
+
+    def get_purchase_details(self, obj):
+        purchasedetails = obj.purchasedetails
+        if purchasedetails:
+            return PurchaseDetailsSerializer(purchasedetails).data
+
+    def get_loan_details(self, obj):
+        loandetails = obj.loandetails
+        if loandetails:
+            return LoanDetailsSerializer(loandetails).data
+
+    def get_puc_details(self, obj):
+        pucdetails = obj.pucdetails
+        if pucdetails:
+            return PUCDetailSerializer(pucdetails).data
+
+    def get_rc_book_details(self, obj):
+        rcbookdetails = obj.rcbookdetails
+        if rcbookdetails:
+            return RCBookDetailSerializer(rcbookdetails).data
 
     def get_vehicle_image(self, obj):
         if obj.vehicle_image:
@@ -104,51 +124,3 @@ class MachineSerializer(serializers.ModelSerializer):
     class Meta:
         model = Machine
         fields = "__all__"  # Adjust fields as necessary
-
-    def create(self, validated_data):
-        # Extract M2M fields data before creation
-        locations_data = validated_data.pop("locations", [])
-        insurances_data = validated_data.pop("insurances", [])
-        tyres_data = validated_data.pop("tyres", [])
-        fitnesses_data = validated_data.pop("fitnesses", [])
-
-        # Create the Machine instance without M2M data
-        machine = Machine.objects.create(**validated_data)
-
-        # Set M2M relationships after the Machine instance is created
-        if locations_data:
-            machine.locations.set(locations_data)
-        if insurances_data:
-            machine.insurances.set(insurances_data)
-        if tyres_data:
-            machine.tyres.set(tyres_data)
-        if fitnesses_data:
-            machine.fitnesses.set(fitnesses_data)
-
-        return machine
-
-
-def update(self, instance, validated_data):
-    # Check and update M2M fields only if they are included in the request data
-    if "locations" in validated_data:
-        locations_data = validated_data.pop("locations")
-        instance.locations.set(locations_data)
-
-    if "insurances" in validated_data:
-        insurances_data = validated_data.pop("insurances")
-        instance.insurances.set(insurances_data)
-
-    if "tyres" in validated_data:
-        tyres_data = validated_data.pop("tyres")
-        instance.tyres.set(tyres_data)
-
-    if "fitnesses" in validated_data:
-        fitnesses_data = validated_data.pop("fitnesses")
-        instance.fitnesses.set(fitnesses_data)
-
-    # Update other fields
-    for attr, value in validated_data.items():
-        setattr(instance, attr, value)
-    instance.save()
-
-    return instance
