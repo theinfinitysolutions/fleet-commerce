@@ -82,19 +82,19 @@ class MachineSerializer(serializers.ModelSerializer):
     rc_book_details = serializers.SerializerMethodField()
 
     def get_location(self, obj):
-        locations = obj.locationdetail_set.all()
+        locations = obj.locationdetail_set.filter(is_deleted=False).all()
         return LocationDetailSerializer(locations, many=True).data
 
     def get_insurance(self, obj):
-        insurances = obj.insurancedetail_set.all()
+        insurances = obj.insurancedetail_set.filter(is_deleted=False).all()
         return InsuranceDetailSerializer(insurances, many=True).data
 
     def get_tyre(self, obj):
-        tyres = obj.tyredetail_set.all()
+        tyres = obj.tyredetail_set.filter(is_deleted=False).all()
         return TyreDetailSerializer(tyres, many=True).data
 
     def get_fitness(self, obj):
-        fitnesses = obj.fitnessdetail_set.all()
+        fitnesses = obj.fitnessdetail_set.filter(is_deleted=False).all()
         return FitnessDetailSerializer(fitnesses, many=True).data
 
     def get_purchase_details(self, obj):
