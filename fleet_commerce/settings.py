@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     "corsheaders",
     "accounts",
     "billing",
-    "product",
     "fleet",
     "utils",
     "workorder",
