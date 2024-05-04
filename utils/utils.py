@@ -5,10 +5,12 @@ import boto3
 
 class S3Utils:
     def initialize_boto3():
-        region_name = os.getenv("AWS_REGION_NAME", "ap-southeast-1")
-        return boto3.client(
-            "s3", region_name=region_name, endpoint_url=f"https://s3.{region_name}.amazonaws.com"
+        session = boto3.Session(
+            aws_access_key_id=os.getenv("AWS_ACCESS_KEY"),
+            aws_secret_access_key=os.getenv("AWS_SECRET_KEY"),
+            region_name=os.getenv("AWS_REGION_NAME", "ap-southeast-1"),
         )
+        return session.client("s3")
 
     @staticmethod
     def generate_s3_url(bucket_name, object_key, expiry=3600):

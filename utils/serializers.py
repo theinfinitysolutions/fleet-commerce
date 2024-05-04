@@ -1,6 +1,7 @@
 import os
 import re
 import time
+from io import BytesIO
 
 import magic
 from django.core.files.storage import default_storage
@@ -40,11 +41,18 @@ class CreateFileSerializer(serializers.ModelSerializer):
         key = f"fleet-image/{ts}_{safe_file_name}"
 
         s3_client = S3Utils.initialize_boto3()
-        file.seek(0)  # Reset the file pointer to the beginning
-        s3_client.upload_fileobj(file, aws_s3_bucket, key)
+        # Read the file content into memory
+        file_content = file.read()
 
-        file.seek(0)
-        file_mime = magic.from_buffer(file.read(), mime=True)
+        # Reset the stream for further processing
+        file_stream = BytesIO(file_content)
+        file_stream.seek(0)
+        file_mime = magic.from_buffer(file_stream.read(), mime=True)
+
+        # Upload the file object to S3 using the content in memory
+        file_stream = BytesIO(file_content)
+        s3_client.upload_fileobj(file_stream, aws_s3_bucket, key)
+
         file_obj = FileObject.objects.create(
             original_file_name=file.name,
             mime_type=file_mime,
