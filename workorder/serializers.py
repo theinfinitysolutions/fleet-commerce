@@ -1,19 +1,14 @@
 from rest_framework import serializers
 
-from fleet.serializers import MachineSerializer
 from billing.serializers import InvoiceSerializer
-from accounts.serializers import UserSerializer
+from fleet.serializers import MachineSerializer
 
 from .models import WorkOrder
 
-class WorkOrderSerializer(serializers.ModelSerializer):
-    Users = serializers.SerializerMethodField()
-    Machines = serializers.SerializerMethodField()
-    Invoices = serializers.SerializerMethodField()
 
-    def get_users(self, obj):
-        users = obj.user_set.filter(is_deleted=False)
-        return UserSerializer(users, many=True).data
+class WorkOrderSerializer(serializers.ModelSerializer):
+    machines = serializers.SerializerMethodField()
+    invoices = serializers.SerializerMethodField()
 
     def get_machines(self, obj):
         machines = obj.machine_set.filter(is_deleted=False).all()

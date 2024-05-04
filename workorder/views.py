@@ -5,10 +5,10 @@ from rest_framework.filters import SearchFilter
 from rest_framework.generics import ListAPIView
 
 from accounts.decorators import authenticate_view
-from .filters import WorkOrderFilter
 from fleet_commerce.mixin import BaseApiMixin
 from pagination import StandardResultsPagination
 
+from .filters import WorkOrderFilter
 from .models import WorkOrder
 from .serializers import WorkOrderSerializer
 
@@ -18,7 +18,7 @@ class WorkOrderView(BaseApiMixin, ListAPIView):
     serializer_class = WorkOrderSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter]
     filterset_class = WorkOrderFilter
-    search_fields = ["billing_party", "machine", "site","status"]
+    search_fields = ["billing_party", "machine", "site", "status"]
     pagination_class = StandardResultsPagination
 
     @authenticate_view

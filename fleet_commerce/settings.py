@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "product",
     "fleet",
     "utils",
+    "workorder",
 ]
 
 MIDDLEWARE = [
