@@ -8,9 +8,13 @@ def apply_is_deleted_filter(queryset):
 
 
 def should_apply_is_deleted_filter(model_class):
-    from fleet_commerce.mixin import IsDeletedMixin
+    from fleet_commerce.mixin import AuthorTimeStampedModel, IsDeletedMixin
 
-    return IsDeletedMixin in inspect.getmro(model_class)  # or hasattr(model_class, "is_deleted")
+    return (
+        IsDeletedMixin in inspect.getmro(model_class)
+        or AuthorTimeStampedModel in inspect.getmro(model_class)
+        or hasattr(model_class, "is_deleted")
+    )
 
 
 class IsDeletedManager(Manager):

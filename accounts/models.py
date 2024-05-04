@@ -5,7 +5,6 @@ from fleet_commerce.mixin import AuthorTimeStampedModel
 
 
 class BankDetails(AuthorTimeStampedModel):
-
     bank_account_holder_name = models.CharField(max_length=100, null=True)
     bank_account_number = models.CharField(max_length=18, null=True)
     ifsc_code = models.CharField(max_length=11, null=True)
