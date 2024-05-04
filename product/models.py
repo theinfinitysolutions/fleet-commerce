@@ -1,7 +1,6 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from accounts.models import User
 from utils.models import TimeStampedModel
 
 
@@ -27,14 +26,14 @@ class Contract(TimeStampedModel):
         Product, on_delete=models.CASCADE, null=True, related_name="contracts"
     )
     supervisor = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, related_name="supervised_contracts"
+        "accounts.User", on_delete=models.SET_NULL, null=True, related_name="supervised_contracts"
     )
     main_driver = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, related_name="main_driver_contracts"
+        "accounts.User", on_delete=models.SET_NULL, null=True, related_name="main_driver_contracts"
     )
-    support_staffs = models.ManyToManyField(User, related_name="support_staff_contracts")
+    support_staffs = models.ManyToManyField("accounts.User", related_name="support_staff_contracts")
     vendor = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, related_name="vendor_contracts"
+        "accounts.User", on_delete=models.SET_NULL, null=True, related_name="vendor_contracts"
     )
     contract_start_date = models.DateField(null=True, blank=True)
     contract_expiry_date = models.DateField(null=True, blank=True)
@@ -87,7 +86,7 @@ class DailyAttendance(TimeStampedModel):
 
 class Reimbursement(TimeStampedModel):
     employee = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, related_name="reimbursements"
+        "accounts.User", on_delete=models.SET_NULL, null=True, related_name="reimbursements"
     )
     product = models.ForeignKey(
         Product, on_delete=models.SET_NULL, null=True, related_name="reimbursements"
@@ -107,7 +106,7 @@ class IssueReport(TimeStampedModel):
         ("closed", "Closed"),
     )
     reporter = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, related_name="reported_issues"
+        "accounts.User", on_delete=models.SET_NULL, null=True, related_name="reported_issues"
     )
     product = models.ForeignKey(
         Product, on_delete=models.SET_NULL, null=True, related_name="product_issues"
