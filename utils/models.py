@@ -13,11 +13,11 @@ class TimeStampedModel(models.Model):
 
 # Create your models here.
 class FileObject(TimeStampedModel):
-    original_file_name = models.CharField(max_length=100)
-    mime_type = models.CharField(max_length=100)
-    s3_key = models.CharField(max_length=100)
-    s3_bucket = models.CharField(max_length=100)
-    size = models.IntegerField(max_length=100)
+    original_file_name = models.CharField(max_length=100, blank=True, null=True)
+    mime_type = models.CharField(max_length=100, blank=True, null=True)
+    s3_key = models.CharField(max_length=100, blank=True, null=True)
+    s3_bucket = models.CharField(max_length=100, blank=True, null=True)
+    size = models.IntegerField(max_length=100, blank=True, null=True)
 
     @property
     def s3_url(self):
