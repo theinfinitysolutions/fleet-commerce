@@ -80,7 +80,6 @@ class MachineSerializer(serializers.ModelSerializer):
     loan_details = serializers.SerializerMethodField()
     puc_details = serializers.SerializerMethodField()
     rc_book_details = serializers.SerializerMethodField()
-    vehicle_image = FileObjectSerializer(allow_null=True)
 
     def get_locations(self, obj):
         locations = obj.locationdetail_set.filter(is_deleted=False).all()
