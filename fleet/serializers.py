@@ -75,7 +75,7 @@ class MachineSerializer(serializers.ModelSerializer):
     insurances = serializers.SerializerMethodField()
     tyres = serializers.SerializerMethodField()
     fitnesses = serializers.SerializerMethodField()
-    vehicle_image = serializers.SerializerMethodField()
+    vehicle_image_object = serializers.SerializerMethodField()
     purchase_details = serializers.SerializerMethodField()
     loan_details = serializers.SerializerMethodField()
     puc_details = serializers.SerializerMethodField()
@@ -117,7 +117,7 @@ class MachineSerializer(serializers.ModelSerializer):
             rcbookdetails = obj.rcbookdetails
             return RCBookDetailSerializer(rcbookdetails).data
 
-    def get_vehicle_image(self, obj):
+    def get_vehicle_image_object(self, obj):
         if obj.vehicle_image:
             return FileObjectSerializer(obj.vehicle_image).data
 
