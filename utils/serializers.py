@@ -27,7 +27,7 @@ class CreateFileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = FileObject
-        fields = "file"
+        fields = "__all__"
 
     def create(self, validated_data):
         file = validated_data["file"]
