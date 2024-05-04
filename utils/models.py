@@ -1,18 +1,10 @@
 from django.db import models
-from django.utils.translation import gettext_lazy as _
 
-
-class TimeStampedModel(models.Model):
-    created_at = models.DateTimeField(_("Created at"), auto_now_add=True)
-    modified_at = models.DateTimeField(_("Modified at"), auto_now=True)
-    is_deleted = models.BooleanField(default=False)
-
-    class Meta:
-        abstract = True
+from fleet_commerce.mixin import AuthorTimeStampedModel
 
 
 # Create your models here.
-class FileObject(TimeStampedModel):
+class FileObject(AuthorTimeStampedModel):
     original_file_name = models.CharField(max_length=100, blank=True, null=True)
     mime_type = models.CharField(max_length=100, blank=True, null=True)
     s3_key = models.CharField(max_length=100, blank=True, null=True)

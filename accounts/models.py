@@ -1,7 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-from product.models import TimeStampedModel
+from fleet_commerce.mixin import AuthorTimeStampedModel
 
 
 class BaseUser(AbstractUser):
@@ -11,7 +11,7 @@ class BaseUser(AbstractUser):
         abstract = True
 
 
-class BankDetails(TimeStampedModel):
+class BankDetails(AuthorTimeStampedModel):
 
     bank_account_holder_name = models.CharField(max_length=100, null=True)
     bank_account_number = models.CharField(max_length=18, null=True)
@@ -21,7 +21,7 @@ class BankDetails(TimeStampedModel):
     linked_user = models.ForeignKey("accounts.User", on_delete=models.CASCADE, null=True)
 
 
-class DocumentDetails(TimeStampedModel):
+class DocumentDetails(AuthorTimeStampedModel):
     document = models.ForeignKey("utils.FileObject", null=True, on_delete=models.SET_NULL)
     linked_user = models.ForeignKey("accounts.User", on_delete=models.CASCADE)
     document_type = models.CharField(max_length=100, null=True)
