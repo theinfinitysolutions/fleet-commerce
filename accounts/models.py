@@ -33,3 +33,7 @@ class User(BaseUser):
     address = models.CharField(max_length=100, null=True)
     aadhar_number = models.CharField(max_length=12, unique=True, null=True)
     pan_number = models.CharField(max_length=10, unique=True, null=True)
+    date_of_birth = models.DateField(null=True)
+    gender = models.CharField(max_length=10, null=True)
+    nationality = models.CharField(max_length=50, null=True)
+    occupation = models.CharField(max_length=100, null=True)
