@@ -139,7 +139,7 @@ class LoanDetailsViewSet(BaseApiMixin, ListAPIView):
         serializer = LoanDetailsSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return self.successful_post_response(serializer.data)
+            return self.successful_post_response(serializer.data, many=True)
         return self.error_response(errors=serializer.errors)
 
     @authenticate_view
@@ -213,7 +213,7 @@ class InsuranceDetailViewSet(BaseApiMixin, ListAPIView):
         """
         Creates a new PurchaseDetails instance from provided data.
         """
-        serializer = InsuranceDetailSerializer(data=request.data)
+        serializer = InsuranceDetailSerializer(data=request.data, many=True)
         if serializer.is_valid():
             serializer.save()
             return self.successful_post_response(serializer.data)
@@ -248,7 +248,7 @@ class TyreDetailViewSet(BaseApiMixin, ListAPIView):
         """
         Creates a new PurchaseDetails instance from provided data.
         """
-        serializer = TyreDetailSerializer(data=request.data)
+        serializer = TyreDetailSerializer(data=request.data, many=True)
         if serializer.is_valid():
             serializer.save()
             return self.successful_post_response(serializer.data)

@@ -45,9 +45,9 @@ class LoanDetails(AuthorTimeStampedModel):
     bank_name = models.CharField(max_length=100, blank=True, null=True)
     loan_account_number = models.CharField(max_length=100, blank=True, null=True)
     loan_amount = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
-    loan_tenure_from = models.DateField()
-    loan_tenure_to = models.DateField()
-    installment_date = models.DateField()
+    loan_tenure_from = models.DateField(blank=True, null=True)
+    loan_tenure_to = models.DateField(blank=True, null=True)
+    installment_date = models.DateField(blank=True, null=True)
     installment_amount = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     number_of_installments = models.IntegerField(blank=True, null=True)
 
@@ -56,7 +56,7 @@ class LocationDetail(AuthorTimeStampedModel):
     machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
     location = models.CharField(max_length=100, blank=True, null=True)
     supervisor = models.CharField(max_length=100, blank=True, null=True)
-    from_date = models.DateField()
+    from_date = models.DateField(blank=True, null=True)
     remarks = models.TextField(blank=True, null=True)
 
 
