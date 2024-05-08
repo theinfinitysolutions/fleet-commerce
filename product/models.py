@@ -1,10 +1,10 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from utils.models import TimeStampedModel
+from fleet_commerce.mixin import AuthorTimeStampedModel
 
 
-class Product(TimeStampedModel):
+class Product(AuthorTimeStampedModel):
     vehicle_number = models.CharField(max_length=56)
     make_name = models.CharField(max_length=56)
     model_name = models.CharField(max_length=56)
@@ -21,7 +21,7 @@ class Product(TimeStampedModel):
     product_image = models.URLField(blank=True, null=True)
 
 
-class Contract(TimeStampedModel):
+class Contract(AuthorTimeStampedModel):
     product = models.ForeignKey(
         Product, on_delete=models.CASCADE, null=True, related_name="contracts"
     )
@@ -52,7 +52,7 @@ class Contract(TimeStampedModel):
     )
 
 
-class ReadingTransaction(TimeStampedModel):
+class ReadingTransaction(AuthorTimeStampedModel):
     FUEL = "fuel"
     ODOMETER = "odometer"
     READING_TYPE_CHOICES = (
@@ -70,7 +70,7 @@ class ReadingTransaction(TimeStampedModel):
     metadata = models.JSONField(default=dict)
 
 
-class DailyAttendance(TimeStampedModel):
+class DailyAttendance(AuthorTimeStampedModel):
     employee = models.ForeignKey(
         Product, on_delete=models.SET_NULL, null=True, related_name="daily_attendances"
     )
@@ -84,7 +84,7 @@ class DailyAttendance(TimeStampedModel):
     )
 
 
-class Reimbursement(TimeStampedModel):
+class Reimbursement(AuthorTimeStampedModel):
     employee = models.ForeignKey(
         "accounts.User", on_delete=models.SET_NULL, null=True, related_name="reimbursements"
     )
@@ -98,7 +98,7 @@ class Reimbursement(TimeStampedModel):
     description = models.TextField()
 
 
-class IssueReport(TimeStampedModel):
+class IssueReport(AuthorTimeStampedModel):
     STATUS_CHOICES = (
         ("reported", "Reported"),
         ("in_progress", "In Progress"),

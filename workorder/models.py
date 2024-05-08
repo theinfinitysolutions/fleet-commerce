@@ -3,10 +3,10 @@ from django.db import models
 from accounts.models import User
 from billing.models import Invoice
 from fleet.models import Machine
-from product.models import TimeStampedModel
+from fleet_commerce.mixin import AuthorTimeStampedModel
 
 
-class WorkOrder(TimeStampedModel):
+class WorkOrder(AuthorTimeStampedModel):
     work_order_number = models.CharField(max_length=100)
     agreement_date = models.DateField()
     billing_party = models.CharField(max_length=100)

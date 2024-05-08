@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     "corsheaders",
     "accounts",
     "billing",
-    "product",
     "fleet",
     "utils",
     "workorder",
@@ -55,6 +54,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "corsheaders.middleware.CorsMiddleware",
+    "fleet_commerce.middleware.ThreadLocalMiddleware",
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True

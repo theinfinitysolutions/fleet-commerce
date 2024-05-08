@@ -2,7 +2,6 @@ from functools import wraps
 
 from django.http import JsonResponse
 from rest_framework.authentication import get_authorization_header
-from rest_framework.authtoken.models import Token
 from rest_framework.exceptions import AuthenticationFailed
 
 from .authentication import BearerTokenAuthentication

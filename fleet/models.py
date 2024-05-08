@@ -1,9 +1,9 @@
 from django.db import models
 
-from product.models import TimeStampedModel
+from fleet_commerce.mixin import AuthorTimeStampedModel
 
 
-class Machine(TimeStampedModel):
+class Machine(AuthorTimeStampedModel):
     machine_number = models.CharField(max_length=100, unique=True)
     engine_number = models.CharField(max_length=100, blank=True, null=True)
     chasis_number = models.CharField(max_length=100, blank=True, null=True)
@@ -19,7 +19,7 @@ class Machine(TimeStampedModel):
     vehicle_image = models.ForeignKey("utils.FileObject", null=True, on_delete=models.SET_NULL)
 
 
-class PurchaseDetails(TimeStampedModel):
+class PurchaseDetails(AuthorTimeStampedModel):
     machine = models.OneToOneField(Machine, on_delete=models.CASCADE)
     bill_no = models.CharField(max_length=100)
     bill_date = models.DateField()
@@ -39,7 +39,7 @@ class PurchaseDetails(TimeStampedModel):
     igst_28_percent = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
 
 
-class LoanDetails(TimeStampedModel):
+class LoanDetails(AuthorTimeStampedModel):
     machine = models.OneToOneField(Machine, on_delete=models.CASCADE)
     purchased_on_loan = models.BooleanField(default=False)
     bank_name = models.CharField(max_length=100, blank=True, null=True)
@@ -52,7 +52,7 @@ class LoanDetails(TimeStampedModel):
     number_of_installments = models.IntegerField(blank=True, null=True)
 
 
-class LocationDetail(TimeStampedModel):
+class LocationDetail(AuthorTimeStampedModel):
     machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
     location = models.CharField(max_length=100, blank=True, null=True)
     supervisor = models.CharField(max_length=100, blank=True, null=True)
@@ -60,7 +60,7 @@ class LocationDetail(TimeStampedModel):
     remarks = models.TextField(blank=True, null=True)
 
 
-class InsuranceDetail(TimeStampedModel):
+class InsuranceDetail(AuthorTimeStampedModel):
     machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
     insurance_company = models.CharField(max_length=100, blank=True, null=True)
     policy_number = models.CharField(max_length=100, blank=True, null=True)
@@ -71,7 +71,7 @@ class InsuranceDetail(TimeStampedModel):
     remarks = models.TextField(blank=True, null=True)
 
 
-class TyreDetail(TimeStampedModel):
+class TyreDetail(AuthorTimeStampedModel):
     machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
     tyre_number = models.CharField(max_length=100, blank=True, null=True)
     from_date = models.DateField()
@@ -79,7 +79,7 @@ class TyreDetail(TimeStampedModel):
     remarks = models.TextField(blank=True, null=True)
 
 
-class FitnessDetail(TimeStampedModel):
+class FitnessDetail(AuthorTimeStampedModel):
     machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
     fitness_certificate_number = models.CharField(max_length=100, blank=True, null=True)
     fitness_certificate_date = models.DateField()
@@ -90,7 +90,7 @@ class FitnessDetail(TimeStampedModel):
     )  # This field requires Django 3.1 or newer
 
 
-class RoadTaxDetail(TimeStampedModel):
+class RoadTaxDetail(AuthorTimeStampedModel):
     machine = models.OneToOneField(Machine, on_delete=models.CASCADE)
     road_tax_permit_number = models.CharField(max_length=100, blank=True, null=True)
     road_tax_from_date = models.DateField()
@@ -98,7 +98,7 @@ class RoadTaxDetail(TimeStampedModel):
     road_tax_remarks = models.TextField(blank=True, null=True)
 
 
-class PUCDetail(TimeStampedModel):
+class PUCDetail(AuthorTimeStampedModel):
     machine = models.OneToOneField(Machine, on_delete=models.CASCADE)
     puc_number = models.CharField(max_length=100, blank=True, null=True)
     puc_from_date = models.DateField()
@@ -106,7 +106,7 @@ class PUCDetail(TimeStampedModel):
     puc_remarks = models.TextField(blank=True, null=True)
 
 
-class RCBookDetail(TimeStampedModel):
+class RCBookDetail(AuthorTimeStampedModel):
     machine = models.OneToOneField(Machine, on_delete=models.CASCADE)
     rc_book_number = models.CharField(max_length=100, blank=True, null=True)
     rc_book_from_date = models.DateField()

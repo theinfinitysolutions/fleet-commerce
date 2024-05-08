@@ -1,11 +1,11 @@
 from django.db import models
 
-from product.models import TimeStampedModel
+from fleet_commerce.mixin import AuthorTimeStampedModel
 
 # Create your models here.
 
 
-class Invoice(TimeStampedModel):
+class Invoice(AuthorTimeStampedModel):
     UNPAID = "unpaid"
     UNDERPAID = "underpaid"
     OVERPAID = "overpaid"

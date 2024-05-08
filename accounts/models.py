@@ -1,18 +1,10 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-from product.models import TimeStampedModel
+from fleet_commerce.mixin import AuthorTimeStampedModel
 
 
-class BaseUser(AbstractUser):
-    settings = models.JSONField(default=dict)
-
-    class Meta:
-        abstract = True
-
-
-class BankDetails(TimeStampedModel):
-
+class BankDetails(AuthorTimeStampedModel):
     bank_account_holder_name = models.CharField(max_length=100, null=True)
     bank_account_number = models.CharField(max_length=18, null=True)
     ifsc_code = models.CharField(max_length=11, null=True)
@@ -21,19 +13,28 @@ class BankDetails(TimeStampedModel):
     linked_user = models.ForeignKey("accounts.User", on_delete=models.CASCADE, null=True)
 
 
-class DocumentDetails(TimeStampedModel):
+class DocumentDetails(AuthorTimeStampedModel):
     document = models.ForeignKey("utils.FileObject", null=True, on_delete=models.SET_NULL)
     linked_user = models.ForeignKey("accounts.User", on_delete=models.CASCADE)
     document_type = models.CharField(max_length=100, null=True)
 
 
-class User(BaseUser):
+class User(AbstractUser):
     name = models.CharField(max_length=100, null=True)
-    phone = models.CharField(max_length=17, blank=True, null=True)
+    role = models.CharField(max_length=255, null=True)
+    phone_number = models.CharField(max_length=17, blank=True, null=True)
     address = models.CharField(max_length=100, null=True)
     aadhar_number = models.CharField(max_length=12, unique=True, null=True)
     pan_number = models.CharField(max_length=10, unique=True, null=True)
+<<<<<<< HEAD
     date_of_birth = models.DateField(null=True)
     gender = models.CharField(max_length=10, null=True)
     nationality = models.CharField(max_length=50, null=True)
     occupation = models.CharField(max_length=100, null=True)
+=======
+    verified = models.BooleanField(default=False)
+    profile_image_url = models.URLField(null=True, blank=True)
+    salary = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    salary_type = models.CharField(max_length=255, null=True, blank=True)
+    salary_frequency = models.CharField(max_length=255, null=True, blank=True)
+>>>>>>> master
