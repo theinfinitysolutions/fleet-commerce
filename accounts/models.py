@@ -21,7 +21,8 @@ class DocumentDetails(AuthorTimeStampedModel):
 
 class User(AbstractUser):
     name = models.CharField(max_length=100, null=True)
-    role = models.CharField(max_length=255, null=True)
+    organization = models.ForeignKey("accounts.Organization", on_delete=models.SET_NULL,null=True)
+    role = models.ForeignKey("accounts.OrganizationRole", on_delete=models.SET_NULL,null=True)
     phone_number = models.CharField(max_length=17, blank=True, null=True)
     address = models.CharField(max_length=100, null=True)
     aadhar_number = models.CharField(max_length=12, unique=True, null=True)
@@ -31,3 +32,15 @@ class User(AbstractUser):
     salary = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     salary_type = models.CharField(max_length=255, null=True, blank=True)
     salary_frequency = models.CharField(max_length=255, null=True, blank=True)
+
+class Organization(AuthorTimeStampedModel):
+    name = models.CharField(max_length=100, null=True)
+    email = models.EmailField(null=True)
+
+class OrganizationRole(AuthorTimeStampedModel):
+    organization = models.ForeignKey("accounts.Organization", on_delete=models.CASCADE)
+    role = models.CharField(max_length=255)
+
+class OrganizationPermission(AuthorTimeStampedModel):
+    role = models.ForeignKey("accounts.OrganizationRole", on_delete=models.CASCADE)
+    permission = models.CharField(max_length=255)
