@@ -139,7 +139,7 @@ class LoanDetailsViewSet(BaseApiMixin, ListAPIView):
         serializer = LoanDetailsSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return self.successful_post_response(serializer.data, many=True)
+            return self.successful_post_response(serializer.data)
         return self.error_response(errors=serializer.errors)
 
     @authenticate_view
@@ -153,13 +153,6 @@ class LoanDetailsViewSet(BaseApiMixin, ListAPIView):
             serializer.save()
             return self.successful_post_response(serializer.data)
         return self.error_response(errors=serializer.errors)
-
-
-def get_machine(machine_id):
-    try:
-        return Machine.objects.get(id=machine_id)
-    except Machine.DoesNotExist:
-        raise NotFound("Machine not found")
 
 
 # Viewset for LocationDetail
@@ -178,7 +171,7 @@ class LocationDetailViewSet(BaseApiMixin, ListAPIView):
         """
         Creates a new PurchaseDetails instance from provided data.
         """
-        serializer = LocationDetailSerializer(data=request.data)
+        serializer = LocationDetailSerializer(data=request.data, many=True)
         if serializer.is_valid():
             serializer.save()
             return self.successful_post_response(serializer.data)
@@ -283,7 +276,7 @@ class FitnessDetailViewSet(BaseApiMixin, ListAPIView):
         """
         Creates a new PurchaseDetails instance from provided data.
         """
-        serializer = FitnessDetailSerializer(data=request.data)
+        serializer = FitnessDetailSerializer(data=request.data, many=True)
         if serializer.is_valid():
             serializer.save()
             return self.successful_post_response(serializer.data)
