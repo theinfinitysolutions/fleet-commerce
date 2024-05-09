@@ -17,8 +17,8 @@ class FileObjectView(BaseApiMixin, ListAPIView):
 
     @authenticate_view
     def post(self, request, *args, **kwargs):
-        serializer = CreateFileSerializer(data=request.data)
+        serializer = CreateFileSerializer(data=request.data, many=True)
         if serializer.is_valid():
             file = serializer.save()
-            return self.successful_post_response(FileObjectSerializer(file).data)
+            return self.successful_post_response(FileObjectSerializer(file, many=True).data)
         return self.error_response(errors=serializer.errors)
