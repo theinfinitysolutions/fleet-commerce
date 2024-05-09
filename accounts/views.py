@@ -3,9 +3,16 @@ from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.shortcuts import get_object_or_404
+from rest_framework.filters import SearchFilter
+from rest_framework.generics import ListAPIView
 
+
+from fleet_commerce.mixin import BaseApiMixin
+from pagination import StandardResultsPagination
 from .decorators import authenticate_view
 from .serializers import UserSerializer
+from .models import User
 
 
 class RegisterView(APIView):
@@ -50,3 +57,35 @@ class LogoutView(APIView):
             )
         except (AttributeError, Token.DoesNotExist):
             return Response({"detail": "Invalid request."}, status=status.HTTP_400_BAD_REQUEST)
+
+class UserView(BaseApiMixin, ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    filter_backends = [SearchFilter]
+    search_fields = ['name', 'email', 'aadhar_number', 'pan_number']
+    pagination_class = StandardResultsPagination
+
+    @authenticate_view
+    def get(self, request, *args, **kwargs):
+        pk = kwargs.get("pk", None)
+        if pk:
+            user = get_object_or_404(User, pk=pk)
+            serializer = UserSerializer(user)
+            return self.successful_get_response(serializer.data)
+        else:
+            queryset = self.filter_queryset(self.get_queryset())
+            page = self.paginate_queryset(queryset)
+            if page is not None:
+                serializer = UserSerializer(page, many=True)
+                return self.get_paginated_response(serializer.data)
+
+            return self.get_paginated_response([])
+        
+    @authenticate_view
+    def patch(self, request, *args, **kwargs):
+        user = get_object_or_404(User, pk=kwargs.get("pk"))
+        serializer = UserSerializer(user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return self.successful_post_response(serializer.data)
+        return self.error_response(errors=serializer.errors)
