@@ -35,7 +35,11 @@ class LocationDetailSerializer(serializers.ModelSerializer):
 
 
 class InsuranceDetailSerializer(serializers.ModelSerializer):
-    document = FileObjectSerializer(source="document", required=False)
+    document = serializers.SerializerMethodField()
+
+    def get_document(self, obj):
+        if obj.document:
+            return FileObjectSerializer(obj.document).data
 
     class Meta:
         model = InsuranceDetail
