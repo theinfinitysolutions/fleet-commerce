@@ -68,6 +68,7 @@ class InsuranceDetail(AuthorTimeStampedModel):
     policy_end_date = models.DateField()
     insurance_amount = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     insurance_type = models.CharField(max_length=100, blank=True, null=True)
+    document = models.ForeignKey("utils.FileObject", null=True, on_delete=models.SET_NULL)
     remarks = models.TextField(blank=True, null=True)
 
 
@@ -85,9 +86,7 @@ class FitnessDetail(AuthorTimeStampedModel):
     fitness_certificate_date = models.DateField()
     fitness_certificate_expiry_date = models.DateField()
     fitness_certificate_remarks = models.TextField(blank=True, null=True)
-    fitness_document_links = models.JSONField(
-        blank=True, null=True
-    )  # This field requires Django 3.1 or newer
+    fitness_document_links = models.JSONField(blank=True, null=True)
 
 
 class RoadTaxDetail(AuthorTimeStampedModel):

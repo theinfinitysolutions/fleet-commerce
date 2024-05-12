@@ -35,6 +35,8 @@ class LocationDetailSerializer(serializers.ModelSerializer):
 
 
 class InsuranceDetailSerializer(serializers.ModelSerializer):
+    document = FileObjectSerializer(source="document", required=False)
+
     class Meta:
         model = InsuranceDetail
         fields = "__all__"
@@ -75,6 +77,7 @@ class MachineSerializer(serializers.ModelSerializer):
     insurances = serializers.SerializerMethodField()
     tyres = serializers.SerializerMethodField()
     fitnesses = serializers.SerializerMethodField()
+    road_tax_detail = serializers.SerializerMethodField()
     vehicle_image_object = serializers.SerializerMethodField()
     purchase_details = serializers.SerializerMethodField()
     loan_details = serializers.SerializerMethodField()
@@ -106,6 +109,11 @@ class MachineSerializer(serializers.ModelSerializer):
         if hasattr(obj, "loandetails"):
             loandetails = obj.loandetails
             return LoanDetailsSerializer(loandetails).data
+
+    def get_road_tax_detail(self, obj):
+        if hasattr(obj, "roadtaxdetail"):
+            road_tax_detail = obj.roadtaxdetail
+            return RoadTaxDetailSerializer(road_tax_detail).data
 
     def get_puc_details(self, obj):
         if hasattr(obj, "pucdetails"):
