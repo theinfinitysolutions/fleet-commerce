@@ -57,14 +57,25 @@ class TimeStampedModel(models.Model):
         abstract = True
 
 
-class AuthorTimeStampedModel(models.Model):
-    created_at = models.DateTimeField(_("Created at"), auto_now_add=True)
-    modified_at = models.DateTimeField(_("Modified at"), auto_now=True)
-    is_deleted = models.BooleanField(default=False)
-    objects = IsDeletedManager()  # Default manager
+class AuthorTimeStampedModel(TimeStampedModel):
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         verbose_name=_("Created by"),
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        editable=False,
+        related_name="+",
+    )
+
+    class Meta:
+        abstract = True
+
+
+class OrganisationTimeStampedModel(AuthorTimeStampedModel):
+    organisation = models.ForeignKey(
+        "accounts.Organisation",
+        verbose_name=_("Organisation"),
         null=True,
         blank=True,
         on_delete=models.SET_NULL,

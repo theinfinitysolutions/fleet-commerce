@@ -21,7 +21,7 @@ class WorkOrderView(BaseApiMixin, ListAPIView):
     search_fields = ["billing_party", "machine", "site", "status"]
     pagination_class = StandardResultsPagination
 
-    @authenticate_view
+    @authenticate_view()
     def get(self, request, *args, **kwargs):
         """
         Retrieves a single WorkOrder instance by its ID.
@@ -40,7 +40,7 @@ class WorkOrderView(BaseApiMixin, ListAPIView):
 
             return self.get_paginated_response([])
 
-    @authenticate_view
+    @authenticate_view()
     def post(self, request, *args, **kwargs):
         """
         Creates a new WorkOrder instance from provided data.
@@ -51,7 +51,7 @@ class WorkOrderView(BaseApiMixin, ListAPIView):
             return self.successful_post_response(serializer.data)
         return self.error_response(errors=serializer.errors)
 
-    @authenticate_view
+    @authenticate_view()
     def patch(self, request, *args, **kwargs):
         """
         Partially updates an existing WorkOrder instance.

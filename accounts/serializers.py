@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from accounts.models import BankDetails, DocumentDetails, User
+from accounts.models import BankDetails, DocumentDetails, Organisation, User
 from utils.serializers import FileObjectSerializer
 
 
@@ -30,13 +30,24 @@ class DocumentDetailsSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class OrganisationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Organisation
+        fields = "__all__"
+
+
 class UserSerializer(serializers.ModelSerializer):
-    bank_details = BankDetailsSerializer(many=True)
-    document_details = DocumentDetailsSerializer(many=True)
+    bank_details = BankDetailsSerializer(many=True, read_only=True)
+    document_details = DocumentDetailsSerializer(many=True, read_only=True)
+    user_organisation = serializers.SerializerMethodField()
+
+    def get_user_organisation(self, obj):
+        if obj.organisation:
+            return OrganisationSerializer(obj.organisation).data
 
     class Meta:
         model = User
-        fields = ["id", "username", "password", "bank_details", "document_details"]
+        fields = "__all__"
         extra_kwargs = {"password": {"write_only": True}}
 
     def create(self, validated_data):

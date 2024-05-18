@@ -43,7 +43,7 @@ class MachineView(BaseApiMixin, ListAPIView):
     search_fields = ["machine_number", "engine_number", "chasis_number", "make_and_model"]
     pagination_class = StandardResultsPagination
 
-    @authenticate_view
+    @authenticate_view()
     def get(self, request, *args, **kwargs):
         """
         Retrieves a single Machine instance by its ID.
@@ -62,7 +62,7 @@ class MachineView(BaseApiMixin, ListAPIView):
 
             return self.get_paginated_response([])
 
-    @authenticate_view
+    @authenticate_view()
     def post(self, request, *args, **kwargs):
         """
         Creates a new Machine instance from provided data.
@@ -73,7 +73,7 @@ class MachineView(BaseApiMixin, ListAPIView):
             return self.successful_post_response(serializer.data)
         return self.error_response(errors=serializer.errors)
 
-    @authenticate_view
+    @authenticate_view()
     def patch(self, request, *args, **kwargs):
         """
         Partially updates an existing Machine instance.
@@ -88,7 +88,7 @@ class MachineView(BaseApiMixin, ListAPIView):
 
 
 class PurchaseDetailsView(BaseApiMixin, ListAPIView):
-    @authenticate_view
+    @authenticate_view()
     def get(self, request, *args, **kwargs):
         """
         Retrieves a single PurchaseDetails instance by its ID.
@@ -97,7 +97,7 @@ class PurchaseDetailsView(BaseApiMixin, ListAPIView):
         serializer = PurchaseDetailsSerializer(machine)
         return self.successful_get_response(serializer.data)
 
-    @authenticate_view
+    @authenticate_view()
     def post(self, request, *args, **kwargs):
         """
         Creates a new PurchaseDetails instance from provided data.
@@ -108,7 +108,7 @@ class PurchaseDetailsView(BaseApiMixin, ListAPIView):
             return self.successful_post_response(serializer.data)
         return self.error_response(errors=serializer.errors)
 
-    @authenticate_view
+    @authenticate_view()
     def patch(self, request, *args, **kwargs):
         """
         Partially updates an existing PurchaseDetails instance.
@@ -122,7 +122,7 @@ class PurchaseDetailsView(BaseApiMixin, ListAPIView):
 
 
 class LoanDetailsViewSet(BaseApiMixin, ListAPIView):
-    @authenticate_view
+    @authenticate_view()
     def get(self, request, *args, **kwargs):
         """
         Retrieves a single PurchaseDetails instance by its ID.
@@ -131,7 +131,7 @@ class LoanDetailsViewSet(BaseApiMixin, ListAPIView):
         serializer = LoanDetailsSerializer(machine)
         return self.successful_get_response(serializer.data)
 
-    @authenticate_view
+    @authenticate_view()
     def post(self, request, *args, **kwargs):
         """
         Creates a new PurchaseDetails instance from provided data.
@@ -142,7 +142,7 @@ class LoanDetailsViewSet(BaseApiMixin, ListAPIView):
             return self.successful_post_response(serializer.data)
         return self.error_response(errors=serializer.errors)
 
-    @authenticate_view
+    @authenticate_view()
     def patch(self, request, *args, **kwargs):
         """
         Partially updates an existing PurchaseDetails instance.
@@ -157,16 +157,21 @@ class LoanDetailsViewSet(BaseApiMixin, ListAPIView):
 
 # Viewset for LocationDetail
 class LocationDetailViewSet(BaseApiMixin, ListAPIView):
-    @authenticate_view
+    @authenticate_view()
     def get(self, request, *args, **kwargs):
         """
         Retrieves a single PurchaseDetails instance by its ID.
         """
-        machine = get_object_or_404(LocationDetail, pk=kwargs.get("pk"))
-        serializer = LocationDetailSerializer(machine)
+        if "pk" in kwargs:
+            machine = get_object_or_404(LocationDetail, pk=kwargs.get("pk"))
+            serializer = LocationDetailSerializer(machine)
+        else:
+            machine = LocationDetail.objects.filter(organisation=request.organisation)
+            serializer = LocationDetailSerializer(machine)
+
         return self.successful_get_response(serializer.data)
 
-    @authenticate_view
+    @authenticate_view()
     def post(self, request, *args, **kwargs):
         """
         Creates a new PurchaseDetails instance from provided data.
@@ -177,7 +182,7 @@ class LocationDetailViewSet(BaseApiMixin, ListAPIView):
             return self.successful_post_response(serializer.data)
         return self.error_response(errors=serializer.errors)
 
-    @authenticate_view
+    @authenticate_view()
     def patch(self, request, *args, **kwargs):
         """
         Partially updates an existing PurchaseDetails instance.
@@ -192,7 +197,7 @@ class LocationDetailViewSet(BaseApiMixin, ListAPIView):
 
 # Viewset for InsuranceDetail
 class InsuranceDetailViewSet(BaseApiMixin, ListAPIView):
-    @authenticate_view
+    @authenticate_view()
     def get(self, request, *args, **kwargs):
         """
         Retrieves a single PurchaseDetails instance by its ID.
@@ -201,7 +206,7 @@ class InsuranceDetailViewSet(BaseApiMixin, ListAPIView):
         serializer = InsuranceDetailSerializer(machine)
         return self.successful_get_response(serializer.data)
 
-    @authenticate_view
+    @authenticate_view()
     def post(self, request, *args, **kwargs):
         """
         Creates a new PurchaseDetails instance from provided data.
@@ -212,7 +217,7 @@ class InsuranceDetailViewSet(BaseApiMixin, ListAPIView):
             return self.successful_post_response(serializer.data)
         return self.error_response(errors=serializer.errors)
 
-    @authenticate_view
+    @authenticate_view()
     def patch(self, request, *args, **kwargs):
         """
         Partially updates an existing PurchaseDetails instance.
@@ -227,7 +232,7 @@ class InsuranceDetailViewSet(BaseApiMixin, ListAPIView):
 
 # Viewset for TyreDetail
 class TyreDetailViewSet(BaseApiMixin, ListAPIView):
-    @authenticate_view
+    @authenticate_view()
     def get(self, request, *args, **kwargs):
         """
         Retrieves a single PurchaseDetails instance by its ID.
@@ -236,7 +241,7 @@ class TyreDetailViewSet(BaseApiMixin, ListAPIView):
         serializer = TyreDetailSerializer(machine)
         return self.successful_get_response(serializer.data)
 
-    @authenticate_view
+    @authenticate_view()
     def post(self, request, *args, **kwargs):
         """
         Creates a new PurchaseDetails instance from provided data.
@@ -247,7 +252,7 @@ class TyreDetailViewSet(BaseApiMixin, ListAPIView):
             return self.successful_post_response(serializer.data)
         return self.error_response(errors=serializer.errors)
 
-    @authenticate_view
+    @authenticate_view()
     def patch(self, request, *args, **kwargs):
         """
         Partially updates an existing PurchaseDetails instance.
@@ -262,7 +267,7 @@ class TyreDetailViewSet(BaseApiMixin, ListAPIView):
 
 # Viewset for FitnessDetail
 class FitnessDetailViewSet(BaseApiMixin, ListAPIView):
-    @authenticate_view
+    @authenticate_view()
     def get(self, request, *args, **kwargs):
         """
         Retrieves a single PurchaseDetails instance by its ID.
@@ -271,7 +276,7 @@ class FitnessDetailViewSet(BaseApiMixin, ListAPIView):
         serializer = FitnessDetailSerializer(machine)
         return self.successful_get_response(serializer.data)
 
-    @authenticate_view
+    @authenticate_view()
     def post(self, request, *args, **kwargs):
         """
         Creates a new PurchaseDetails instance from provided data.
@@ -282,7 +287,7 @@ class FitnessDetailViewSet(BaseApiMixin, ListAPIView):
             return self.successful_post_response(serializer.data)
         return self.error_response(errors=serializer.errors)
 
-    @authenticate_view
+    @authenticate_view()
     def patch(self, request, *args, **kwargs):
         """
         Partially updates an existing PurchaseDetails instance.
@@ -296,7 +301,7 @@ class FitnessDetailViewSet(BaseApiMixin, ListAPIView):
 
 
 class RoadTaxDetailViewSet(BaseApiMixin, ListAPIView):
-    @authenticate_view
+    @authenticate_view()
     def get(self, request, *args, **kwargs):
         """
         Retrieves a single PurchaseDetails instance by its ID.
@@ -305,7 +310,7 @@ class RoadTaxDetailViewSet(BaseApiMixin, ListAPIView):
         serializer = RoadTaxDetailSerializer(machine)
         return self.successful_get_response(serializer.data)
 
-    @authenticate_view
+    @authenticate_view()
     def post(self, request, *args, **kwargs):
         """
         Creates a new PurchaseDetails instance from provided data.
@@ -316,7 +321,7 @@ class RoadTaxDetailViewSet(BaseApiMixin, ListAPIView):
             return self.successful_post_response(serializer.data)
         return self.error_response(errors=serializer.errors)
 
-    @authenticate_view
+    @authenticate_view()
     def patch(self, request, *args, **kwargs):
         """
         Partially updates an existing PurchaseDetails instance.
@@ -330,7 +335,7 @@ class RoadTaxDetailViewSet(BaseApiMixin, ListAPIView):
 
 
 class PUCDetailViewSet(BaseApiMixin, ListAPIView):
-    @authenticate_view
+    @authenticate_view()
     def get(self, request, *args, **kwargs):
         """
         Retrieves a single PurchaseDetails instance by its ID.
@@ -339,7 +344,7 @@ class PUCDetailViewSet(BaseApiMixin, ListAPIView):
         serializer = PUCDetailSerializer(machine)
         return self.successful_get_response(serializer.data)
 
-    @authenticate_view
+    @authenticate_view()
     def post(self, request, *args, **kwargs):
         """
         Creates a new PurchaseDetails instance from provided data.
@@ -350,7 +355,7 @@ class PUCDetailViewSet(BaseApiMixin, ListAPIView):
             return self.successful_post_response(serializer.data)
         return self.error_response(errors=serializer.errors)
 
-    @authenticate_view
+    @authenticate_view()
     def patch(self, request, *args, **kwargs):
         """
         Partially updates an existing PurchaseDetails instance.
@@ -364,7 +369,7 @@ class PUCDetailViewSet(BaseApiMixin, ListAPIView):
 
 
 class RCBookDetailViewSet(BaseApiMixin, ListAPIView):
-    @authenticate_view
+    @authenticate_view()
     def get(self, request, *args, **kwargs):
         """
         Retrieves a single PurchaseDetails instance by its ID.
@@ -373,7 +378,7 @@ class RCBookDetailViewSet(BaseApiMixin, ListAPIView):
         serializer = RCBookDetailSerializer(machine)
         return self.successful_get_response(serializer.data)
 
-    @authenticate_view
+    @authenticate_view()
     def post(self, request, *args, **kwargs):
         """
         Creates a new PurchaseDetails instance from provided data.
@@ -384,7 +389,7 @@ class RCBookDetailViewSet(BaseApiMixin, ListAPIView):
             return self.successful_post_response(serializer.data)
         return self.error_response(errors=serializer.errors)
 
-    @authenticate_view
+    @authenticate_view()
     def patch(self, request, *args, **kwargs):
         """
         Partially updates an existing PurchaseDetails instance.

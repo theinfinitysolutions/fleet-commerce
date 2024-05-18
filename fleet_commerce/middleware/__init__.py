@@ -33,3 +33,10 @@ def get_current_user():
     request = get_current_request()
     if request:
         return getattr(request, "user", None)
+
+
+def get_current_organisation():
+    """returns the current user, if exist, otherwise returns None"""
+    request = get_current_request()
+    if request:
+        return getattr(request, "organisation", None)
