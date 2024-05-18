@@ -119,7 +119,7 @@ class BankDetailsView(BaseApiMixin, ListAPIView):
 
     @authenticate_view()
     def get(self, request, *args, **kwargs):
-        bank_details = BankDetails.objects.filter(user=request.user)
+        bank_details = BankDetails.objects.filter(linked_user=request.user)
         serializer = BankDetailsSerializer(bank_details, many=True)
         return self.successful_get_response(serializer.data)
 
@@ -145,7 +145,7 @@ class DocumentDetailsView(BaseApiMixin, ListAPIView):
 
     @authenticate_view()
     def get(self, request, *args, **kwargs):
-        document_details = DocumentDetails.objects.filter(user=request.user)
+        document_details = DocumentDetails.objects.filter(linked_user=request.user)
         serializer = DocumentDetailsSerializer(document_details, many=True)
         return self.successful_get_response(serializer.data)
 
