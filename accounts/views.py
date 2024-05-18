@@ -77,9 +77,9 @@ class UserListView(BaseApiMixin, ListAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        if user.role == Role.SUPER_ADMIN:
+        if user.has_role(Role.SUPER_ADMIN):
             return User.objects.all()
-        elif user.role == Role.ORGANISATION_ADMIN:
+        elif user.has_role(Role.ORGANISATION_ADMIN):
             return User.objects.filter(organisation=user.organisation)
         else:
             return User.objects.none()
