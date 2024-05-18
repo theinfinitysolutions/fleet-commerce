@@ -26,6 +26,9 @@ def authenticate_view(func):
             authenticator = BearerTokenAuthentication()
             user, token = authenticator.authenticate_credentials(auth_token)
             _request.user = user  # Set the user in the original Django HttpRequest
+            _request.organisation = (
+                user.organisation
+            )  # Set the user in the original Django HttpRequest
         except AuthenticationFailed:
             return JsonResponse({"detail": "Invalid token."}, status=401)
 

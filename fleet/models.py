@@ -1,9 +1,9 @@
 from django.db import models
 
-from fleet_commerce.mixin import AuthorTimeStampedModel
+from fleet_commerce.mixin import AuthorTimeStampedModel, OrganisationTimeStampedModel
 
 
-class Machine(AuthorTimeStampedModel):
+class Machine(OrganisationTimeStampedModel):
     machine_number = models.CharField(max_length=100, unique=True)
     engine_number = models.CharField(max_length=100, blank=True, null=True)
     chasis_number = models.CharField(max_length=100, blank=True, null=True)
@@ -19,7 +19,7 @@ class Machine(AuthorTimeStampedModel):
     vehicle_image = models.ForeignKey("utils.FileObject", null=True, on_delete=models.SET_NULL)
 
 
-class PurchaseDetails(AuthorTimeStampedModel):
+class PurchaseDetails(OrganisationTimeStampedModel):
     machine = models.OneToOneField(Machine, on_delete=models.CASCADE)
     bill_no = models.CharField(max_length=100)
     bill_date = models.DateField()
@@ -39,7 +39,7 @@ class PurchaseDetails(AuthorTimeStampedModel):
     igst_28_percent = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
 
 
-class LoanDetails(AuthorTimeStampedModel):
+class LoanDetails(OrganisationTimeStampedModel):
     machine = models.OneToOneField(Machine, on_delete=models.CASCADE)
     purchased_on_loan = models.BooleanField(default=False)
     bank_name = models.CharField(max_length=100, blank=True, null=True)
@@ -52,7 +52,7 @@ class LoanDetails(AuthorTimeStampedModel):
     number_of_installments = models.IntegerField(blank=True, null=True)
 
 
-class LocationDetail(AuthorTimeStampedModel):
+class LocationDetail(OrganisationTimeStampedModel):
     machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
     location = models.CharField(max_length=100, blank=True, null=True)
     supervisor = models.CharField(max_length=100, blank=True, null=True)
@@ -60,7 +60,7 @@ class LocationDetail(AuthorTimeStampedModel):
     remarks = models.TextField(blank=True, null=True)
 
 
-class InsuranceDetail(AuthorTimeStampedModel):
+class InsuranceDetail(OrganisationTimeStampedModel):
     machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
     insurance_company = models.CharField(max_length=100, blank=True, null=True)
     policy_number = models.CharField(max_length=100, blank=True, null=True)
@@ -72,7 +72,7 @@ class InsuranceDetail(AuthorTimeStampedModel):
     remarks = models.TextField(blank=True, null=True)
 
 
-class TyreDetail(AuthorTimeStampedModel):
+class TyreDetail(OrganisationTimeStampedModel):
     machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
     tyre_number = models.CharField(max_length=100, blank=True, null=True)
     from_date = models.DateField()
@@ -80,7 +80,7 @@ class TyreDetail(AuthorTimeStampedModel):
     remarks = models.TextField(blank=True, null=True)
 
 
-class FitnessDetail(AuthorTimeStampedModel):
+class FitnessDetail(OrganisationTimeStampedModel):
     machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
     fitness_certificate_number = models.CharField(max_length=100, blank=True, null=True)
     fitness_certificate_date = models.DateField()
@@ -89,7 +89,7 @@ class FitnessDetail(AuthorTimeStampedModel):
     fitness_document_links = models.JSONField(blank=True, null=True)
 
 
-class RoadTaxDetail(AuthorTimeStampedModel):
+class RoadTaxDetail(OrganisationTimeStampedModel):
     machine = models.OneToOneField(Machine, on_delete=models.CASCADE)
     road_tax_permit_number = models.CharField(max_length=100, blank=True, null=True)
     road_tax_from_date = models.DateField()
@@ -97,7 +97,7 @@ class RoadTaxDetail(AuthorTimeStampedModel):
     road_tax_remarks = models.TextField(blank=True, null=True)
 
 
-class PUCDetail(AuthorTimeStampedModel):
+class PUCDetail(OrganisationTimeStampedModel):
     machine = models.OneToOneField(Machine, on_delete=models.CASCADE)
     puc_number = models.CharField(max_length=100, blank=True, null=True)
     puc_from_date = models.DateField()
@@ -105,7 +105,7 @@ class PUCDetail(AuthorTimeStampedModel):
     puc_remarks = models.TextField(blank=True, null=True)
 
 
-class RCBookDetail(AuthorTimeStampedModel):
+class RCBookDetail(OrganisationTimeStampedModel):
     machine = models.OneToOneField(Machine, on_delete=models.CASCADE)
     rc_book_number = models.CharField(max_length=100, blank=True, null=True)
     rc_book_from_date = models.DateField()

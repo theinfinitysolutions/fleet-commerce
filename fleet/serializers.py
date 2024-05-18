@@ -77,61 +77,39 @@ class RCBookDetailSerializer(serializers.ModelSerializer):
 
 
 class MachineSerializer(serializers.ModelSerializer):
-    locations = serializers.SerializerMethodField()
-    insurances = serializers.SerializerMethodField()
-    tyres = serializers.SerializerMethodField()
-    fitnesses = serializers.SerializerMethodField()
-    road_tax_detail = serializers.SerializerMethodField()
-    vehicle_image_object = serializers.SerializerMethodField()
-    purchase_details = serializers.SerializerMethodField()
-    loan_details = serializers.SerializerMethodField()
-    puc_details = serializers.SerializerMethodField()
-    rc_book_details = serializers.SerializerMethodField()
+    field_serializers = {
+        "locations": ("locationdetail_set", "LocationDetailSerializer"),
+        "insurances": ("insurancedetail_set", "InsuranceDetailSerializer"),
+        "tyres": ("tyredetail_set", "TyreDetailSerializer"),
+        "fitnesses": ("fitnessdetail_set", "FitnessDetailSerializer"),
+        "purchase_details": ("purchasedetails", "PurchaseDetailsSerializer"),
+        "loan_details": ("loandetails", "LoanDetailsSerializer"),
+        "road_tax_detail": ("roadtaxdetail", "RoadTaxDetailSerializer"),
+        "puc_details": ("pucdetails", "PUCDetailSerializer"),
+        "rc_book_details": ("rcbookdetails", "RCBookDetailSerializer"),
+        "vehicle_image_object": ("vehicle_image", "FileObjectSerializer"),
+    }
 
-    def get_locations(self, obj):
-        locations = obj.locationdetail_set.filter(is_deleted=False).all()
-        return LocationDetailSerializer(locations, many=True).data
+    for field_name, (related_field, serializer_class_name) in field_serializers.items():
+        locals()[field_name] = serializers.SerializerMethodField()
 
-    def get_insurances(self, obj):
-        insurances = obj.insurancedetail_set.filter(is_deleted=False).all()
-        return InsuranceDetailSerializer(insurances, many=True).data
+    def get_dynamic_field(self, obj, related_field, serializer_class_name):
+        if hasattr(obj, related_field):
+            related_obj = getattr(obj, related_field)
+            if isinstance(related_obj, (list, tuple)) or hasattr(related_obj, "all"):
+                related_obj = related_obj.filter(is_deleted=False).all()
+                many = True
+            else:
+                many = False
+            serializer_class = globals()[serializer_class_name]
+            return serializer_class(related_obj, many=many).data
 
-    def get_tyres(self, obj):
-        tyres = obj.tyredetail_set.filter(is_deleted=False).all()
-        return TyreDetailSerializer(tyres, many=True).data
-
-    def get_fitnesses(self, obj):
-        fitnesses = obj.fitnessdetail_set.filter(is_deleted=False).all()
-        return FitnessDetailSerializer(fitnesses, many=True).data
-
-    def get_purchase_details(self, obj):
-        if hasattr(obj, "purchasedetails"):
-            purchasedetails = obj.purchasedetails
-            return PurchaseDetailsSerializer(purchasedetails).data
-
-    def get_loan_details(self, obj):
-        if hasattr(obj, "loandetails"):
-            loandetails = obj.loandetails
-            return LoanDetailsSerializer(loandetails).data
-
-    def get_road_tax_detail(self, obj):
-        if hasattr(obj, "roadtaxdetail"):
-            road_tax_detail = obj.roadtaxdetail
-            return RoadTaxDetailSerializer(road_tax_detail).data
-
-    def get_puc_details(self, obj):
-        if hasattr(obj, "pucdetails"):
-            pucdetails = obj.pucdetails
-            return PUCDetailSerializer(pucdetails).data
-
-    def get_rc_book_details(self, obj):
-        if hasattr(obj, "rcbookdetails"):
-            rcbookdetails = obj.rcbookdetails
-            return RCBookDetailSerializer(rcbookdetails).data
-
-    def get_vehicle_image_object(self, obj):
-        if obj.vehicle_image:
-            return FileObjectSerializer(obj.vehicle_image).data
+    for field_name, (related_field, serializer_class_name) in field_serializers.items():
+        locals()[
+            f"get_{field_name}"
+        ] = lambda self, obj, rf=related_field, scn=serializer_class_name: self.get_dynamic_field(
+            obj, rf, scn
+        )
 
     class Meta:
         model = Machine

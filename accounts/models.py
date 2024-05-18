@@ -19,7 +19,7 @@ class DocumentDetails(AuthorTimeStampedModel):
     document_type = models.CharField(max_length=100, null=True)
 
 
-class User(AbstractUser):
+class User(AbstractUser, AuthorTimeStampedModel):
     name = models.CharField(max_length=100, null=True)
     role = models.CharField(max_length=255, null=True)
     phone_number = models.CharField(max_length=17, blank=True, null=True)
@@ -31,3 +31,14 @@ class User(AbstractUser):
     salary = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     salary_type = models.CharField(max_length=255, null=True, blank=True)
     salary_frequency = models.CharField(max_length=255, null=True, blank=True)
+    organisation = models.ForeignKey("accounts.Organisation", on_delete=models.SET_NULL, null=True)
+
+
+class Organisation(AuthorTimeStampedModel):
+    name = models.CharField(max_length=100, unique=True)
+    address = models.CharField(max_length=100, null=True)
+    contact_person = models.CharField(max_length=100, null=True)
+    contact_email = models.EmailField(null=True)
+    contact_phone_number = models.CharField(max_length=17, null=True)
+    website = models.URLField(null=True)
+    description = models.TextField(null=True)
