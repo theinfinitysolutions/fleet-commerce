@@ -27,9 +27,7 @@ def authenticate_view(role=None):
                 authenticator = BearerTokenAuthentication()
                 user, token = authenticator.authenticate_credentials(auth_token)
                 _request.user = user  # Set the user in the original Django HttpRequest
-                _request.organisation = (
-                    user.organisation
-                )  # Set the organisation in the original Django HttpRequest
+                _request.organisation = user.organisation
                 if role and not user.has_role(role):
                     return JsonResponse(
                         {"detail": "You do not have permission to perform this action."}, status=403

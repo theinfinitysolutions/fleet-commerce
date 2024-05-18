@@ -162,8 +162,13 @@ class LocationDetailViewSet(BaseApiMixin, ListAPIView):
         """
         Retrieves a single PurchaseDetails instance by its ID.
         """
-        machine = get_object_or_404(LocationDetail, pk=kwargs.get("pk"))
-        serializer = LocationDetailSerializer(machine)
+        if "pk" in kwargs:
+            machine = get_object_or_404(LocationDetail, pk=kwargs.get("pk"))
+            serializer = LocationDetailSerializer(machine)
+        else:
+            machine = LocationDetail.objects.filter(organisation=request.organisation)
+            serializer = LocationDetailSerializer(machine)
+
         return self.successful_get_response(serializer.data)
 
     @authenticate_view()
