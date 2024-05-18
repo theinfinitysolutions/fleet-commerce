@@ -1,6 +1,6 @@
 from django.db import models
 
-from fleet_commerce.mixin import AuthorTimeStampedModel
+from fleet_commerce.mixin import AuthorTimeStampedModel, OrganisationTimeStampedModel
 
 
 # Create your models here.
@@ -16,3 +16,14 @@ class FileObject(AuthorTimeStampedModel):
         from utils.utils import S3Utils
 
         return S3Utils.generate_s3_url(self.s3_bucket, self.s3_key)
+
+
+class Location(OrganisationTimeStampedModel):
+    location = models.CharField(max_length=100, blank=True, null=True)
+    custodian_name = models.CharField(max_length=100, blank=True, null=True)
+    address_line1 = models.CharField(max_length=100, blank=True, null=True)
+    address_line2 = models.CharField(max_length=100, blank=True, null=True)
+    city = models.CharField(max_length=100, blank=True, null=True)
+    state = models.CharField(max_length=100, blank=True, null=True)
+    country = models.CharField(max_length=100, blank=True, null=True)
+    pin_code = models.CharField(max_length=100, blank=True, null=True)
