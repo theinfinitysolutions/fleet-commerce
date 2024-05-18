@@ -27,7 +27,7 @@ class RegisterView(BaseApiMixin, ListAPIView):
             user = serializer.save()
             token, _ = Token.objects.get_or_create(user=user)
             return self.successful_post_response(
-                {"detail": "User registered successfully.", "token": str(token)}
+                {"detail": "User registered successfully.", "token": str(token), "id": user.id}
             )
 
         return self.error_response(errors=serializer.errors)
