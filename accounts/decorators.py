@@ -7,31 +7,39 @@ from rest_framework.exceptions import AuthenticationFailed
 from .authentication import BearerTokenAuthentication
 
 
-def authenticate_view(func):
-    @wraps(func)
-    def wrapper(self, request, *args, **kwargs):
-        # Access the underlying HttpRequest if necessary
-        _request = getattr(request, "_request", request)
+def authenticate_view(role=None):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(self, request, *args, **kwargs):
+            # Access the underlying HttpRequest if necessary
+            _request = getattr(request, "_request", request)
 
-        auth = get_authorization_header(_request).split()
+            auth = get_authorization_header(_request).split()
 
-        if not auth or auth[0].lower() != b"bearer":
-            return JsonResponse(
-                {"detail": "Authentication credentials were not provided or are incorrect."},
-                status=401,
-            )
+            if not auth or auth[0].lower() != b"bearer":
+                return JsonResponse(
+                    {"detail": "Authentication credentials were not provided or are incorrect."},
+                    status=401,
+                )
 
-        try:
-            auth_token = auth[1].decode("utf-8")  # Ensure to decode from bytes to string
-            authenticator = BearerTokenAuthentication()
-            user, token = authenticator.authenticate_credentials(auth_token)
-            _request.user = user  # Set the user in the original Django HttpRequest
-            _request.organisation = (
-                user.organisation
-            )  # Set the user in the original Django HttpRequest
-        except AuthenticationFailed:
-            return JsonResponse({"detail": "Invalid token."}, status=401)
+            try:
+                auth_token = auth[1].decode("utf-8")  # Ensure to decode from bytes to string
+                authenticator = BearerTokenAuthentication()
+                user, token = authenticator.authenticate_credentials(auth_token)
+                _request.user = user  # Set the user in the original Django HttpRequest
+                _request.organisation = (
+                    user.organisation
+                )  # Set the organisation in the original Django HttpRequest
+                if role and not user.has_role(role):
+                    return JsonResponse(
+                        {"detail": "You do not have permission to perform this action."}, status=403
+                    )
 
-        return func(self, request, *args, **kwargs)
+            except AuthenticationFailed:
+                return JsonResponse({"detail": "Invalid token."}, status=401)
 
-    return wrapper
+            return func(self, request, *args, **kwargs)
+
+        return wrapper
+
+    return decorator

@@ -9,13 +9,13 @@ from .serializers import CreateFileSerializer, FileObjectSerializer
 
 
 class FileObjectView(BaseApiMixin, ListAPIView):
-    @authenticate_view
+    @authenticate_view()
     def get(self, request, *args, **kwargs):
         machine = get_object_or_404(FileObject, pk=kwargs.get("pk"))
         serializer = FileObjectSerializer(machine)
         return self.successful_get_response(serializer.data)
 
-    @authenticate_view
+    @authenticate_view()
     def post(self, request, *args, **kwargs):
         serializer = CreateFileSerializer(data=request.data)
         if serializer.is_valid():
