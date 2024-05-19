@@ -85,8 +85,8 @@ class MachineSerializer(serializers.ModelSerializer):
         "purchase_details": ("purchasedetails", "PurchaseDetailsSerializer"),
         "loan_details": ("loandetails", "LoanDetailsSerializer"),
         "road_tax_detail": ("roadtaxdetail", "RoadTaxDetailSerializer"),
-        "puc_details": ("pucdetails", "PUCDetailSerializer"),
-        "rc_book_details": ("rcbookdetails", "RCBookDetailSerializer"),
+        "puc_detail": ("pucdetail", "PUCDetailSerializer"),
+        "rc_book_detail": ("rcbookdetail", "RCBookDetailSerializer"),
         "vehicle_image_object": ("vehicle_image", "FileObjectSerializer"),
     }
 
