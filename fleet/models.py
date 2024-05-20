@@ -18,7 +18,6 @@ class Machine(OrganisationTimeStampedModel):
     machine_type = models.CharField(max_length=100, blank=True, null=True)
     vehicle_image = models.ForeignKey("utils.FileObject", null=True, on_delete=models.SET_NULL)
 
-
 class PurchaseDetails(OrganisationTimeStampedModel):
     machine = models.OneToOneField(Machine, on_delete=models.CASCADE)
     bill_no = models.CharField(max_length=100)

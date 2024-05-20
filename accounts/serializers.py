@@ -19,9 +19,9 @@ class BankDetailsSerializer(serializers.ModelSerializer):
 
 
 class DocumentDetailsSerializer(serializers.ModelSerializer):
-    document = serializers.SerializerMethodField()
+    document_details = serializers.SerializerMethodField()
 
-    def get_document(self, obj):
+    def get_document_details(self, obj):
         if obj.document:
             return FileObjectSerializer(obj.document).data
 
