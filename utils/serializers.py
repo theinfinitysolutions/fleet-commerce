@@ -14,6 +14,7 @@ from .models import FileObject, Location
 
 class FileObjectSerializer(serializers.ModelSerializer):
     s3_url = serializers.SerializerMethodField()
+    cloudfront_url = serializers.SerializerMethodField()
 
     class Meta:
         model = FileObject
@@ -21,6 +22,9 @@ class FileObjectSerializer(serializers.ModelSerializer):
 
     def get_s3_url(self, obj):
         return obj.s3_url
+    
+    def get_cloudfront_url(self, obj):
+        return obj.cloudfront_url
 
 
 class CreateFileSerializer(serializers.ModelSerializer):
@@ -52,7 +56,7 @@ class CreateFileSerializer(serializers.ModelSerializer):
         # Upload the file object to S3 using the content in memory
         file_stream = BytesIO(file_content)
         s3_client.upload_fileobj(file_stream, aws_s3_bucket, key)
-
+       
         file_obj = FileObject.objects.create(
             original_file_name=file.name,
             mime_type=file_mime,

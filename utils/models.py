@@ -17,6 +17,13 @@ class FileObject(AuthorTimeStampedModel):
 
         return S3Utils.generate_s3_url(self.s3_bucket, self.s3_key)
 
+    @property
+    def cloudfront_url(self):
+        import os
+
+        cloudfront_url = os.getenv("CLOUDFRONT_URL")
+        return f"{cloudfront_url}/{self.s3_key}"
+
 
 class Location(OrganisationTimeStampedModel):
     location = models.CharField(max_length=100, blank=True, null=True)
