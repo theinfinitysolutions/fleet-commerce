@@ -17,3 +17,5 @@ RUN pip install -r requirements.txt
 
 # Copy the current directory contents into the container at /code
 COPY . /code/
+
+CMD ["python","manage.py","runserver","0.0.0.0:7007"]

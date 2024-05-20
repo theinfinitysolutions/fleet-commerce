@@ -13,15 +13,15 @@ from .models import FileObject, Location
 
 
 class FileObjectSerializer(serializers.ModelSerializer):
-    s3_url = serializers.SerializerMethodField()
+    #s3_url = serializers.SerializerMethodField()
     cloudfront_url = serializers.SerializerMethodField()
 
     class Meta:
         model = FileObject
         fields = "__all__"
 
-    def get_s3_url(self, obj):
-        return obj.s3_url
+    #def get_s3_url(self, obj):
+        #return obj.s3_url
     
     def get_cloudfront_url(self, obj):
         return obj.cloudfront_url
