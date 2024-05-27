@@ -3,6 +3,7 @@ from rest_framework import serializers
 from billing.serializers import InvoiceSerializer
 from fleet.serializers import MachineSerializer
 from accounts.serializers import UserSerializer
+from utils.serializers import CustomerSerializer
 
 from .models import WorkOrder
 
@@ -11,6 +12,7 @@ class WorkOrderSerializer(serializers.ModelSerializer):
     machines = serializers.SerializerMethodField()
     invoices = serializers.SerializerMethodField()
     resource_details = serializers.SerializerMethodField()
+    billing_party = serializers.SerializerMethodField()
 
     def get_machines(self, obj):
         machines = obj.machines.filter(is_deleted=False).all()
@@ -24,6 +26,10 @@ class WorkOrderSerializer(serializers.ModelSerializer):
         resources = obj.resource_details.filter(is_deleted=False).all()
         return UserSerializer(resources, many=True).data
 
+    def get_billing_party(self, obj):
+        billing_party = obj.billing_party.filter(is_deleted=False).all()
+        return CustomerSerializer(billing_party, many=True).data
+        
     class Meta:
         model = WorkOrder
         fields = "__all__"  # Adjust fields as necessary
