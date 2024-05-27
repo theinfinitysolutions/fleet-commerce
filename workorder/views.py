@@ -18,7 +18,7 @@ class WorkOrderView(BaseApiMixin, ListAPIView):
     serializer_class = WorkOrderSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter]
     filterset_class = WorkOrderFilter
-    search_fields = ["billing_party", "machine", "site", "status"]
+    search_fields = ["customer", "machine", "site", "status"]
     pagination_class = StandardResultsPagination
 
     @authenticate_view()
