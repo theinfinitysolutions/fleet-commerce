@@ -12,7 +12,7 @@ class WorkOrderSerializer(serializers.ModelSerializer):
     machines = serializers.SerializerMethodField()
     invoices = serializers.SerializerMethodField()
     resource_details = serializers.SerializerMethodField()
-    billing_party = serializers.SerializerMethodField()
+    customer = serializers.SerializerMethodField()
 
     def get_machines(self, obj):
         machines = obj.machines.filter(is_deleted=False).all()
@@ -26,9 +26,9 @@ class WorkOrderSerializer(serializers.ModelSerializer):
         resources = obj.resource_details.filter(is_deleted=False).all()
         return UserSerializer(resources, many=True).data
 
-    def get_billing_party(self, obj):
-        billing_party = obj.billing_party.filter(is_deleted=False).all()
-        return CustomerSerializer(billing_party, many=True).data
+    def get_customer(self, obj):
+        customer = obj.customer_set.filter(is_deleted=False).all()
+        return CustomerSerializer(customer, many=True).data
         
     class Meta:
         model = WorkOrder
