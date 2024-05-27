@@ -9,7 +9,7 @@ from rest_framework import serializers
 
 from utils.utils import S3Utils
 
-from .models import FileObject, Location
+from .models import FileObject, Location, Customer
 
 
 class FileObjectSerializer(serializers.ModelSerializer):
@@ -71,4 +71,9 @@ class CreateFileSerializer(serializers.ModelSerializer):
 class LocationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Location
+        fields = "__all__"
+
+class CustomerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Customer
         fields = "__all__"
