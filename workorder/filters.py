@@ -9,4 +9,4 @@ class WorkOrderFilter(filters.FilterSet):
 
     class Meta:
         model = WorkOrder
-        fields = ["created_at", "machine", "billing_party", "site", "status"]
+        fields = ["created_at", "machine", "customer", "site", "status"]
