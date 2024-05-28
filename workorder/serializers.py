@@ -12,7 +12,7 @@ from accounts.models import User
 
 class WorkOrderSerializer(serializers.ModelSerializer):
     machine = serializers.SerializerMethodField()
-    invoices = serializers.SerializerMethodField()
+    billing_details = serializers.SerializerMethodField()
     resource_details = serializers.SerializerMethodField()
     customer = serializers.SerializerMethodField()
 
@@ -40,7 +40,7 @@ class WorkOrderSerializer(serializers.ModelSerializer):
         return MachineSerializer(machine, many=True).data
 
     def get_invoices(self, obj):
-        invoices = obj.invoices_set.filter(is_deleted=False).all()
+        invoices = obj.billing_details_set.filter(is_deleted=False).all()
         return InvoiceSerializer(invoices, many=True).data
 
     def get_resource_details(self, obj):
