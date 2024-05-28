@@ -40,7 +40,7 @@ class WorkOrderSerializer(serializers.ModelSerializer):
         return MachineSerializer(machine, many=True).data
 
     def get_billing_details(self, obj):
-        invoices = obj.billing_details_set.filter(is_deleted=False).all()
+        invoices = obj.billing_details.filter(is_deleted=False).all()
         return InvoiceSerializer(invoices, many=True).data
 
     def get_resource_details(self, obj):
@@ -48,7 +48,7 @@ class WorkOrderSerializer(serializers.ModelSerializer):
         return UserSerializer(resources, many=True).data
 
     def get_customer(self, obj):
-        customer = obj.customer_set.filter(is_deleted=False).all()
+        customer = obj.customer.filter(is_deleted=False).all()
         return CustomerSerializer(customer, many=True).data
         
     class Meta:
