@@ -50,7 +50,7 @@ class WorkOrderSerializer(serializers.ModelSerializer):
         return UserSerializer(resources, many=True).data
 
     def get_customer(self, obj):
-        customer = obj.customer.filter(is_deleted=False).all()
+        customer = obj.customer_set.filter(is_deleted=False).all()
         return CustomerSerializer(customer, many=True).data
         
     class Meta:
