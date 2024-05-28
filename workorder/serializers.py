@@ -39,7 +39,7 @@ class WorkOrderSerializer(serializers.ModelSerializer):
         machine = obj.machine.filter(is_deleted=False).all()
         return MachineSerializer(machine, many=True).data
 
-    def get_invoices(self, obj):
+    def get_billing_details(self, obj):
         invoices = obj.billing_details_set.filter(is_deleted=False).all()
         return InvoiceSerializer(invoices, many=True).data
 
