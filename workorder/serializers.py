@@ -11,7 +11,7 @@ from utils.models import Customer
 from accounts.models import User
 
 class WorkOrderSerializer(serializers.ModelSerializer):
-    machines = serializers.SerializerMethodField()
+    machine = serializers.SerializerMethodField()
     invoices = serializers.SerializerMethodField()
     resource_details = serializers.SerializerMethodField()
     customer = serializers.SerializerMethodField()
@@ -35,7 +35,7 @@ class WorkOrderSerializer(serializers.ModelSerializer):
         write_only=True
     )
 
-    def get_machines(self, obj):
+    def get_machine(self, obj):
         machines = obj.machines.filter(is_deleted=False).all()
         return MachineSerializer(machines, many=True).data
 
