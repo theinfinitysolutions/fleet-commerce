@@ -28,8 +28,8 @@ class WorkOrderView(BaseApiMixin, ListAPIView):
         """
         pk = kwargs.get("pk", None)
         if pk:
-            WorkOrder = get_object_or_404(WorkOrder, pk=pk)
-            serializer = WorkOrderSerializer(WorkOrder)
+            work_order = get_object_or_404(WorkOrder, pk=pk)
+            serializer = WorkOrderSerializer(work_order)
             return self.successful_get_response(serializer.data)
         else:
             queryset = self.filter_queryset(self.get_queryset())
@@ -56,9 +56,9 @@ class WorkOrderView(BaseApiMixin, ListAPIView):
         """
         Partially updates an existing WorkOrder instance.
         """
-        WorkOrder = get_object_or_404(WorkOrder, pk=kwargs.get("pk"))
+        work_order = get_object_or_404(WorkOrder, pk=kwargs.get("pk"))
 
-        serializer = WorkOrderSerializer(WorkOrder, data=request.data, partial=True)
+        serializer = WorkOrderSerializer(work_order, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return self.successful_post_response(serializer.data)
