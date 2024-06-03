@@ -4,7 +4,6 @@ from accounts.models import User
 from billing.models import Invoice
 from fleet.models import Machine
 from utils.models import Customer
-from stock.models import SparePart
 from fleet_commerce.mixin import AuthorTimeStampedModel, OrganisationTimeStampedModel
 
 
