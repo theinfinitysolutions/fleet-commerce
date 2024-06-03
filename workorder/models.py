@@ -4,7 +4,8 @@ from accounts.models import User
 from billing.models import Invoice
 from fleet.models import Machine
 from utils.models import Customer
-from fleet_commerce.mixin import AuthorTimeStampedModel
+from stock.models import SparePart
+from fleet_commerce.mixin import AuthorTimeStampedModel, OrganisationTimeStampedModel
 
 
 class WorkOrder(AuthorTimeStampedModel):
@@ -20,3 +21,46 @@ class WorkOrder(AuthorTimeStampedModel):
     resource_details = models.ManyToManyField(User, related_name="resources")
     billing_details = models.OneToOneField(Invoice, on_delete=models.CASCADE, null=True)
     status = models.CharField(max_length=20, default="Confirmed")
+
+class DailyUpdate(AuthorTimeStampedModel):
+    work_order = models.ForeignKey(WorkOrder, on_delete=models.CASCADE)
+    shift = models.CharField(max_length=20)
+    driver = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    helper = models.ForeignKey(User, on_delete=models.SET_NULL, null=True) 
+    hmr = models.IntegerField()
+    num_moves = models.IntegerField()
+    overtime = models.IntegerField(default=0)
+    cooling_minutes = models.IntegerField(default=0)
+    safety_check_shoes = models.BooleanField(default=True)
+    safety_check_jacket = models.BooleanField(default=True)
+    safety_check_helmet = models.BooleanField(default=True)
+
+class FitnessReport(AuthorTimeStampedModel):
+    WORKING = "Working"
+    NOT_WORKING = "Not Working"
+
+    CAMERA_CONDITION_CHOICES = [
+        (WORKING, WORKING),
+        (NOT_WORKING, NOT_WORKING),
+    ]
+
+    LOW = "Low"
+    MEDIUM = "Medium"
+    HIGH = "High"
+
+    BATTERY_WATER_LEVEL_CHOICES = [
+        (LOW, LOW),
+        (MEDIUM, MEDIUM),
+        (HIGH, HIGH),
+    ]
+
+    work_order = models.ForeignKey(WorkOrder, on_delete=models.CASCADE)
+    machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
+    fuel_consumed_in_litres = models.IntegerField()
+    transmission_oil_in_litres = models.IntegerField()
+    hydraulic_oil_in_litres = models.IntegerField()
+    brake_oil_in_litres = models.IntegerField()
+    engine_oil_in_litres = models.IntegerField()
+    tyre_condition = models.CharField(max_length=20)
+    camera_condition = models.CharField(max_length=20, choices=CAMERA_CONDITION_CHOICES)
+    battery_water_level = models.CharField(max_length=20, choices=BATTERY_WATER_LEVEL_CHOICES)

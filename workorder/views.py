@@ -9,8 +9,8 @@ from fleet_commerce.mixin import BaseApiMixin
 from pagination import StandardResultsPagination
 
 from .filters import WorkOrderFilter
-from .models import WorkOrder
-from .serializers import WorkOrderSerializer
+from .models import WorkOrder, DailyUpdate, FitnessReport
+from .serializers import WorkOrderSerializer, DailyUpdateSerializer, FitnessReportSerializer
 
 
 class WorkOrderView(BaseApiMixin, ListAPIView):
@@ -59,6 +59,84 @@ class WorkOrderView(BaseApiMixin, ListAPIView):
         work_order = get_object_or_404(WorkOrder, pk=kwargs.get("pk"))
 
         serializer = WorkOrderSerializer(work_order, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return self.successful_post_response(serializer.data)
+        return self.error_response(errors=serializer.errors)
+
+class DailyUpdateView(BaseApiMixin, ListAPIView):
+    @authenticate_view()
+    def get(self, request, *args, **kwargs):
+        """
+        Retrieves a single DailyUpdate instance by its ID.
+        """
+        if "pk" in kwargs:
+            daily_update = get_object_or_404(DailyUpdate, pk=kwargs.get("pk"))
+            serializer = DailyUpdateSerializer(daily_update)
+        else:
+            daily_update = DailyUpdate.objects.filter(organisation=request.organisation)
+            serializer = DailyUpdateSerializer(daily_update, many=True)
+
+        return self.successful_get_response(serializer.data)
+    
+    @authenticate_view()
+    def post(self, request, *args, **kwargs):
+        """
+        Creates a new DailyUpdate instance from provided data.
+        """
+        serializer = DailyUpdateSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return self.successful_post_response(serializer.data)
+        return self.error_response(errors=serializer.errors)
+    
+    @authenticate_view()
+    def patch(self, request, *args, **kwargs):
+        """
+        Partially updates an existing DailyUpdate instance.
+        """
+        daily_update = get_object_or_404(DailyUpdate, pk=kwargs.get("pk"))
+
+        serializer = DailyUpdateSerializer(daily_update, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return self.successful_post_response(serializer.data)
+        return self.error_response(errors=serializer.errors)
+
+class FitnessReportView(BaseApiMixin, ListAPIView):
+    @authenticate_view()
+    def get(self, request, *args, **kwargs):
+        """
+        Retrieves a single FitnessReport instance by its ID.
+        """
+        if "pk" in kwargs:
+            fitness_report = get_object_or_404(FitnessReport, pk=kwargs.get("pk"))
+            serializer = FitnessReportSerializer(fitness_report)
+        else:
+            fitness_report = FitnessReport.objects.filter(organisation=request.organisation)
+            serializer = FitnessReportSerializer(fitness_report, many=True)
+
+        return self.successful_get_response(serializer.data)
+    
+    @authenticate_view()
+    def post(self, request, *args, **kwargs):
+        """
+        Creates a new FitnessReport instance from provided data.
+        """
+        serializer = FitnessReportSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return self.successful_post_response(serializer.data)
+        return self.error_response(errors=serializer.errors)
+    
+    @authenticate_view()
+    def patch(self, request, *args, **kwargs):
+        """
+        Partially updates an existing FitnessReport instance.
+        """
+        fitness_report = get_object_or_404(FitnessReport, pk=kwargs.get("pk"))
+
+        serializer = FitnessReportSerializer(fitness_report, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return self.successful_post_response(serializer.data)

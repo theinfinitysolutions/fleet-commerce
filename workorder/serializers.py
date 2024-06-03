@@ -5,7 +5,7 @@ from fleet.serializers import MachineSerializer
 from accounts.serializers import UserSerializer
 from utils.serializers import CustomerSerializer
 
-from .models import WorkOrder
+from .models import WorkOrder, DailyUpdate, FitnessReport
 from fleet.models import Machine
 from utils.models import Customer
 from accounts.models import User
@@ -58,3 +58,80 @@ class WorkOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = WorkOrder
         fields = "__all__"  # Adjust fields as necessary
+
+class DailyUpdateSerializer(serializers.ModelSerializer):
+    work_order = serializers.SerializerMethodField()
+    driver = serializers.SerializerMethodField()
+    helper = serializers.SerializerMethodField()
+
+    work_order_id = serializers.PrimaryKeyRelatedField(
+        queryset=WorkOrder.objects.all(),
+        source='work_order',  # The ForeignKey relationship
+        write_only=True
+    )
+
+    driver_id = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.all(),
+        source='driver',  # The ForeignKey relationship
+        write_only=True
+    )
+
+    helper_id = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.all(),
+        source='helper',  # The ForeignKey relationship
+        write_only=True
+    )
+
+    def get_work_order(self, obj):
+        work_order = obj.work_order
+        if not work_order.is_deleted:
+            return WorkOrderSerializer(work_order).data
+        return None
+    
+    def get_driver(self, obj):
+        driver = obj.driver
+        if not driver or not driver.is_deleted:
+            return UserSerializer(driver).data
+        return None
+    
+    def get_helper(self, obj):
+        helper = obj.helper
+        if not helper or not helper.is_deleted:
+            return UserSerializer(helper).data
+        return None
+    
+    class Meta:
+        model = DailyUpdate
+        fields = "__all__"
+
+class FitnessReportSerializer(serializers.ModelSerializer):
+    work_order = serializers.SerializerMethodField()
+    machine = serializers.SerializerMethodField()
+
+    work_order_id = serializers.PrimaryKeyRelatedField(
+        queryset=WorkOrder.objects.all(),
+        source='work_order',  # The ForeignKey relationship
+        write_only=True
+    )
+
+    machine_id = serializers.PrimaryKeyRelatedField(
+        queryset=Machine.objects.all(),
+        source='machine',  # The ForeignKey relationship
+        write_only=True
+    )
+
+    def get_work_order(self, obj):
+        work_order = obj.work_order
+        if not work_order.is_deleted:
+            return WorkOrderSerializer(work_order).data
+        return None
+    
+    def get_machine(self, obj):
+        machine = obj.machine
+        if not machine.is_deleted:
+            return MachineSerializer(machine).data
+        return None
+    
+    class Meta:
+        model = FitnessReport
+        fields = "__all__"

@@ -51,9 +51,20 @@ class LocationView(BaseApiMixin, ListAPIView):
 class CustomerView(BaseApiMixin, ListAPIView):
     @authenticate_view()
     def get(self, request, *args, **kwargs):
-        customers = Customer.objects.filter(organisation=request.organisation)
-        serializer = CustomerSerializer(customers, many=True)
-        return self.successful_get_response(serializer.data)
+        pk = kwargs.get("pk", None)
+        if pk:
+            customer = get_object_or_404(Customer, pk=pk)
+            serializer = CustomerSerializer(customer)
+            return self.successful_get_response(serializer.data)
+        else:
+            queryset = self.filter_queryset(self.get_queryset())
+            page = self.paginate_queryset(queryset)
+            if page is not None:
+                serializer = CustomerSerializer(page, many=True)
+                return self.get_paginated_response(serializer.data)
+
+            return self.get_paginated_response([])
+
 
     @authenticate_view()
     def post(self, request, *args, **kwargs):
