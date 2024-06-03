@@ -24,8 +24,8 @@ class WorkOrder(AuthorTimeStampedModel):
 class DailyUpdate(AuthorTimeStampedModel):
     work_order = models.ForeignKey(WorkOrder, on_delete=models.CASCADE)
     shift = models.CharField(max_length=20)
-    driver = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    helper = models.ForeignKey(User, on_delete=models.SET_NULL, null=True) 
+    driver = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="driver")
+    helper = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="helper") 
     hmr = models.IntegerField()
     num_moves = models.IntegerField()
     overtime = models.IntegerField(default=0)
