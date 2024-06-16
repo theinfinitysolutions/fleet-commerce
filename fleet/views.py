@@ -43,6 +43,12 @@ class MachineView(BaseApiMixin, ListAPIView):
     search_fields = ["machine_number", "engine_number", "chasis_number", "make_and_model"]
     pagination_class = StandardResultsPagination
 
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_authenticated:
+            return Machine.objects.filter(organisation=user.organisation).order_by("-created_at")
+        return Machine.objects.none()
+
     @authenticate_view()
     def get(self, request, *args, **kwargs):
         """

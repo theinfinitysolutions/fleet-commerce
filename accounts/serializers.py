@@ -1,10 +1,11 @@
 from rest_framework import serializers
 
 from accounts.models import BankDetails, DocumentDetails, Organisation, User
+from utils.mixins import DynamicFieldSerializerMixin
 from utils.serializers import FileObjectSerializer
 
 
-class BankDetailsSerializer(serializers.ModelSerializer):
+class BankDetailsSerializer(DynamicFieldSerializerMixin, serializers.ModelSerializer):
     class Meta:
         model = BankDetails
         fields = "__all__"
@@ -18,7 +19,7 @@ class BankDetailsSerializer(serializers.ModelSerializer):
         return value
 
 
-class DocumentDetailsSerializer(serializers.ModelSerializer):
+class DocumentDetailsSerializer(DynamicFieldSerializerMixin, serializers.ModelSerializer):
     document_details = serializers.SerializerMethodField()
 
     def get_document_details(self, obj):
@@ -30,13 +31,13 @@ class DocumentDetailsSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class OrganisationSerializer(serializers.ModelSerializer):
+class OrganisationSerializer(DynamicFieldSerializerMixin, serializers.ModelSerializer):
     class Meta:
         model = Organisation
         fields = "__all__"
 
 
-class UserSerializer(serializers.ModelSerializer):
+class UserSerializer(DynamicFieldSerializerMixin, serializers.ModelSerializer):
     bank_details = BankDetailsSerializer(many=True, read_only=True)
     document_details = DocumentDetailsSerializer(many=True, read_only=True)
     user_organisation = serializers.SerializerMethodField()
