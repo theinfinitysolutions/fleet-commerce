@@ -55,6 +55,8 @@ class LocationView(BaseApiMixin, ListAPIView):
 
 
 class CustomerView(BaseApiMixin, ListAPIView):
+    queryset = Customer.objects.all()
+
     @authenticate_view()
     def get(self, request, *args, **kwargs):
         pk = kwargs.get("pk", None)

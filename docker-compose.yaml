@@ -15,7 +15,7 @@ services:
     volumes:
       - .:/code
     ports:
-      - "7007:7007"
+      - "7001:7007"
     env_file:
       - .env  # This line specifies that environment variables should be read from the .env file
     depends_on:
