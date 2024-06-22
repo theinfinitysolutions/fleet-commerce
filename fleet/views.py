@@ -172,7 +172,7 @@ class LocationDetailViewSet(BaseApiMixin, ListAPIView):
             machine = get_object_or_404(LocationDetail, pk=kwargs.get("pk"))
             serializer = LocationDetailSerializer(machine)
         else:
-            machine = LocationDetail.objects.filter(organisation=request.organisation)
+            machine = LocationDetail.objects.filter(organisation=request.user.organisation)
             serializer = LocationDetailSerializer(machine)
 
         return self.successful_get_response(serializer.data)

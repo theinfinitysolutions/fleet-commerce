@@ -3,9 +3,14 @@ from rest_framework.generics import ListAPIView
 
 from accounts.decorators import authenticate_view
 from fleet_commerce.mixin import BaseApiMixin
-from utils.models import FileObject, Location, Customer
+from utils.models import Customer, FileObject, Location
 
-from .serializers import CreateFileSerializer, FileObjectSerializer, LocationSerializer, CustomerSerializer
+from .serializers import (
+    CreateFileSerializer,
+    CustomerSerializer,
+    FileObjectSerializer,
+    LocationSerializer,
+)
 
 
 class FileObjectView(BaseApiMixin, ListAPIView):
@@ -27,7 +32,7 @@ class FileObjectView(BaseApiMixin, ListAPIView):
 class LocationView(BaseApiMixin, ListAPIView):
     @authenticate_view()
     def get(self, request, *args, **kwargs):
-        locations = Location.objects.filter(organisation=request.organisation)
+        locations = Location.objects.filter(organisation=request.user.organisation)
         serializer = LocationSerializer(locations, many=True)
         return self.successful_get_response(serializer.data)
 
@@ -47,7 +52,8 @@ class LocationView(BaseApiMixin, ListAPIView):
             serializer.save()
             return self.successful_post_response(serializer.data)
         return self.error_response(errors=serializer.errors)
-    
+
+
 class CustomerView(BaseApiMixin, ListAPIView):
     @authenticate_view()
     def get(self, request, *args, **kwargs):
@@ -64,7 +70,6 @@ class CustomerView(BaseApiMixin, ListAPIView):
                 return self.get_paginated_response(serializer.data)
 
             return self.get_paginated_response([])
-
 
     @authenticate_view()
     def post(self, request, *args, **kwargs):

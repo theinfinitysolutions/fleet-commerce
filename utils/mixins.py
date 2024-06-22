@@ -7,4 +7,3 @@ class DynamicFieldSerializerMixin(object):
         for field_name, context_key in self.dynamic_fields.items():
             if not self.context.get(context_key):
                 self.fields.pop(field_name, None)
-        self.fields.pop("is_deleted", None)

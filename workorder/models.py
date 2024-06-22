@@ -3,11 +3,11 @@ from django.db import models
 from accounts.models import User
 from billing.models import Invoice
 from fleet.models import Machine
+from fleet_commerce.mixin import OrganisationTimeStampedModel
 from utils.models import Customer
-from fleet_commerce.mixin import AuthorTimeStampedModel, OrganisationTimeStampedModel
 
 
-class WorkOrder(AuthorTimeStampedModel):
+class WorkOrder(OrganisationTimeStampedModel):
     work_order_number = models.CharField(max_length=100)
     agreement_date = models.DateField()
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
@@ -21,11 +21,12 @@ class WorkOrder(AuthorTimeStampedModel):
     billing_details = models.OneToOneField(Invoice, on_delete=models.CASCADE, null=True)
     status = models.CharField(max_length=20, default="Confirmed")
 
-class DailyUpdate(AuthorTimeStampedModel):
+
+class DailyUpdate(OrganisationTimeStampedModel):
     work_order = models.ForeignKey(WorkOrder, on_delete=models.CASCADE)
     shift = models.CharField(max_length=20)
     driver = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="driver")
-    helper = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="helper") 
+    helper = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="helper")
     hmr = models.IntegerField()
     num_moves = models.IntegerField()
     overtime = models.IntegerField(default=0)
@@ -34,7 +35,8 @@ class DailyUpdate(AuthorTimeStampedModel):
     safety_check_jacket = models.BooleanField(default=True)
     safety_check_helmet = models.BooleanField(default=True)
 
-class FitnessReport(AuthorTimeStampedModel):
+
+class FitnessReport(OrganisationTimeStampedModel):
     WORKING = "Working"
     NOT_WORKING = "Not Working"
 

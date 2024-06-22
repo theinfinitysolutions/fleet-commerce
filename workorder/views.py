@@ -9,8 +9,12 @@ from fleet_commerce.mixin import BaseApiMixin
 from pagination import StandardResultsPagination
 
 from .filters import WorkOrderFilter
-from .models import WorkOrder, DailyUpdate, FitnessReport
-from .serializers import WorkOrderSerializer, DailyUpdateSerializer, FitnessReportSerializer
+from .models import DailyUpdate, FitnessReport, WorkOrder
+from .serializers import (
+    DailyUpdateSerializer,
+    FitnessReportSerializer,
+    WorkOrderSerializer,
+)
 
 
 class WorkOrderView(BaseApiMixin, ListAPIView):
@@ -64,6 +68,7 @@ class WorkOrderView(BaseApiMixin, ListAPIView):
             return self.successful_post_response(serializer.data)
         return self.error_response(errors=serializer.errors)
 
+
 class DailyUpdateView(BaseApiMixin, ListAPIView):
     @authenticate_view()
     def get(self, request, *args, **kwargs):
@@ -74,11 +79,11 @@ class DailyUpdateView(BaseApiMixin, ListAPIView):
             daily_update = get_object_or_404(DailyUpdate, pk=kwargs.get("pk"))
             serializer = DailyUpdateSerializer(daily_update)
         else:
-            daily_update = DailyUpdate.objects.filter(organisation=request.organisation)
+            daily_update = DailyUpdate.objects.filter(organisation=request.user.organisation)
             serializer = DailyUpdateSerializer(daily_update, many=True)
 
         return self.successful_get_response(serializer.data)
-    
+
     @authenticate_view()
     def post(self, request, *args, **kwargs):
         """
@@ -89,7 +94,7 @@ class DailyUpdateView(BaseApiMixin, ListAPIView):
             serializer.save()
             return self.successful_post_response(serializer.data)
         return self.error_response(errors=serializer.errors)
-    
+
     @authenticate_view()
     def patch(self, request, *args, **kwargs):
         """
@@ -103,6 +108,7 @@ class DailyUpdateView(BaseApiMixin, ListAPIView):
             return self.successful_post_response(serializer.data)
         return self.error_response(errors=serializer.errors)
 
+
 class FitnessReportView(BaseApiMixin, ListAPIView):
     @authenticate_view()
     def get(self, request, *args, **kwargs):
@@ -113,11 +119,11 @@ class FitnessReportView(BaseApiMixin, ListAPIView):
             fitness_report = get_object_or_404(FitnessReport, pk=kwargs.get("pk"))
             serializer = FitnessReportSerializer(fitness_report)
         else:
-            fitness_report = FitnessReport.objects.filter(organisation=request.organisation)
+            fitness_report = FitnessReport.objects.filter(organisation=request.user.organisation)
             serializer = FitnessReportSerializer(fitness_report, many=True)
 
         return self.successful_get_response(serializer.data)
-    
+
     @authenticate_view()
     def post(self, request, *args, **kwargs):
         """
@@ -128,7 +134,7 @@ class FitnessReportView(BaseApiMixin, ListAPIView):
             serializer.save()
             return self.successful_post_response(serializer.data)
         return self.error_response(errors=serializer.errors)
-    
+
     @authenticate_view()
     def patch(self, request, *args, **kwargs):
         """
