@@ -13,6 +13,9 @@ from .models import DailyUpdate, FitnessReport, MachineResourceLinkage, WorkOrde
 
 
 class WorkOrderSerializer(DynamicFieldSerializerMixin, serializers.ModelSerializer):
+    dynamic_fields = {
+        "machine_resource_linkage": "with_machine_resource_linkage",
+    }
     billing_details = serializers.SerializerMethodField()
     customer = serializers.SerializerMethodField()
     resource_alloted = serializers.SerializerMethodField()
@@ -41,7 +44,7 @@ class WorkOrderSerializer(DynamicFieldSerializerMixin, serializers.ModelSerializ
 
     class Meta:
         model = WorkOrder
-        fields = "__all__"  # Adjust fields as necessary
+        fields = "__all__"
 
 
 class DailyUpdateSerializer(DynamicFieldSerializerMixin, serializers.ModelSerializer):

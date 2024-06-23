@@ -57,13 +57,13 @@ class MachineView(BaseApiMixin, ListAPIView):
         pk = kwargs.get("pk", None)
         if pk:
             machine = get_object_or_404(Machine, pk=pk)
-            serializer = MachineSerializer(machine)
+            serializer = MachineSerializer(machine, context=request.query_params)
             return self.successful_get_response(serializer.data)
         else:
             queryset = self.filter_queryset(self.get_queryset())
             page = self.paginate_queryset(queryset)
             if page is not None:
-                serializer = MachineSerializer(page, many=True)
+                serializer = MachineSerializer(page, context=request.query_params, many=True)
                 return self.get_paginated_response(serializer.data)
 
             return self.get_paginated_response([])
