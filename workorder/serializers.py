@@ -13,9 +13,7 @@ from .models import DailyUpdate, FitnessReport, MachineResourceLinkage, WorkOrde
 
 
 class WorkOrderSerializer(DynamicFieldSerializerMixin, serializers.ModelSerializer):
-    machine = serializers.SerializerMethodField()
     billing_details = serializers.SerializerMethodField()
-    resource_details = serializers.SerializerMethodField()
     customer = serializers.SerializerMethodField()
     resource_alloted = serializers.SerializerMethodField()
 
@@ -29,19 +27,11 @@ class WorkOrderSerializer(DynamicFieldSerializerMixin, serializers.ModelSerializ
         resources = obj.machine_resource_linkage.filter(is_deleted=False).all()
         return MachineResourceLinkageSerializer(resources, many=True).data
 
-    def get_machine(self, obj):
-        machine = obj.machine.filter(is_deleted=False).all()
-        return MachineSerializer(machine, many=True).data
-
     def get_billing_details(self, obj):
         if obj.billing_details:
             invoices = obj.billing_details.filter(is_deleted=False).all()
             return InvoiceSerializer(invoices, many=True).data
         return None
-
-    def get_resource_details(self, obj):
-        resources = obj.resource_details.filter(is_deleted=False).all()
-        return UserSerializer(resources, many=True).data
 
     def get_customer(self, obj):
         customer = obj.customer

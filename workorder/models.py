@@ -19,7 +19,7 @@ class WorkOrder(OrganisationTimeStampedModel):
     billing_details = models.OneToOneField(Invoice, on_delete=models.CASCADE, null=True)
     status = models.CharField(max_length=20, default="Confirmed")
     machine_resource_linkage = models.ManyToManyField(
-        "MachineResourceLinkage", related_name="machine_resource_linkage"
+        "MachineResourceLinkage", related_name="machine_resource_linkage", null=True
     )
 
 
