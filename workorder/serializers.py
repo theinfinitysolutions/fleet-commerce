@@ -130,8 +130,8 @@ class FitnessReportSerializer(DynamicFieldSerializerMixin, serializers.ModelSeri
 
 
 class MachineResourceLinkageSerializer(DynamicFieldSerializerMixin, serializers.ModelSerializer):
-    machine = serializers.PrimaryKeyRelatedField(queryset=Machine.objects.all())
-    resource = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    machine = MachineSerializer()
+    resource = UserSerializer()
 
     class Meta:
         model = MachineResourceLinkage
