@@ -5,14 +5,17 @@ from rest_framework.filters import SearchFilter
 from rest_framework.generics import ListAPIView
 
 from accounts.decorators import authenticate_view
+from accounts.models import User
+from fleet.models import Machine
 from fleet_commerce.mixin import BaseApiMixin
 from pagination import StandardResultsPagination
 
 from .filters import WorkOrderFilter
-from .models import DailyUpdate, FitnessReport, WorkOrder
+from .models import DailyUpdate, FitnessReport, MachineResourceLinkage, WorkOrder
 from .serializers import (
     DailyUpdateSerializer,
     FitnessReportSerializer,
+    MachineResourceLinkageSerializer,
     WorkOrderSerializer,
 )
 
@@ -67,6 +70,22 @@ class WorkOrderView(BaseApiMixin, ListAPIView):
             serializer.save()
             return self.successful_post_response(serializer.data)
         return self.error_response(errors=serializer.errors)
+
+
+class AddWorkOrderMachineResource(BaseApiMixin, ListAPIView):
+    @authenticate_view()
+    def post(self, request, *args, **kwargs):
+        """
+        Adds a new MachineResourceLinkage instance from provided data.
+        """
+        work_order = get_object_or_404(WorkOrder, pk=request.data.get("work_order"))
+        machine = get_object_or_404(Machine, pk=request.data.get("machine"))
+        resource = get_object_or_404(User, pk=request.data.get("resource"))
+
+        linkage = MachineResourceLinkage.objects.create(machine=machine, resource=resource)
+        work_order.machine_resource_linkage.add(linkage)
+        serializer = MachineResourceLinkageSerializer(linkage)
+        return self.successful_post_response(serializer.data)
 
 
 class DailyUpdateView(BaseApiMixin, ListAPIView):

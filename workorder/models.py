@@ -13,13 +13,19 @@ class WorkOrder(OrganisationTimeStampedModel):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     contract_start_date = models.DateField()
     contract_end_date = models.DateField()
-    machine = models.ManyToManyField(Machine, related_name="machines")
     site = models.CharField(max_length=100)
     address = models.CharField(max_length=100)
     special_instructions = models.CharField(max_length=500, null=True)
-    resource_details = models.ManyToManyField(User, related_name="resources")
     billing_details = models.OneToOneField(Invoice, on_delete=models.CASCADE, null=True)
     status = models.CharField(max_length=20, default="Confirmed")
+    machine_resource_linkage = models.ManyToManyField(
+        "MachineResourceLinkage", related_name="machine_resource_linkage"
+    )
+
+
+class MachineResourceLinkage(OrganisationTimeStampedModel):
+    machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
+    resource = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
 class DailyUpdate(OrganisationTimeStampedModel):

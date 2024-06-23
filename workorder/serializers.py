@@ -9,7 +9,7 @@ from utils.mixins import DynamicFieldSerializerMixin
 from utils.models import Customer
 from utils.serializers import CustomerSerializer
 
-from .models import DailyUpdate, FitnessReport, WorkOrder
+from .models import DailyUpdate, FitnessReport, MachineResourceLinkage, WorkOrder
 
 
 class WorkOrderSerializer(DynamicFieldSerializerMixin, serializers.ModelSerializer):
@@ -17,25 +17,17 @@ class WorkOrderSerializer(DynamicFieldSerializerMixin, serializers.ModelSerializ
     billing_details = serializers.SerializerMethodField()
     resource_details = serializers.SerializerMethodField()
     customer = serializers.SerializerMethodField()
+    resource_alloted = serializers.SerializerMethodField()
 
-    machine_ids = serializers.PrimaryKeyRelatedField(
-        many=True,
-        queryset=Machine.objects.all(),
-        source="machine",  # Linking directly to the many-to-many field on the model
-        write_only=True,
-    )
-
-    resource_detail_ids = serializers.PrimaryKeyRelatedField(
-        many=True,
-        queryset=User.objects.all(),
-        source="resource_details",  # Linking directly to the many-to-many field on the model
-        write_only=True,
-    )
     customer_id = serializers.PrimaryKeyRelatedField(
         queryset=Customer.objects.all(),
         source="customer",  # The ForeignKey relationship
         write_only=True,
     )
+
+    def get_resource_alloted(self, obj):
+        resources = obj.machine_resource_linkage.filter(is_deleted=False).all()
+        return MachineResourceLinkageSerializer(resources, many=True).data
 
     def get_machine(self, obj):
         machine = obj.machine.filter(is_deleted=False).all()
@@ -134,4 +126,13 @@ class FitnessReportSerializer(DynamicFieldSerializerMixin, serializers.ModelSeri
 
     class Meta:
         model = FitnessReport
+        fields = "__all__"
+
+
+class MachineResourceLinkageSerializer(DynamicFieldSerializerMixin, serializers.ModelSerializer):
+    machine = serializers.PrimaryKeyRelatedField(queryset=Machine.objects.all())
+    resource = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+
+    class Meta:
+        model = MachineResourceLinkage
         fields = "__all__"

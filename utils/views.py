@@ -3,6 +3,7 @@ from rest_framework.generics import ListAPIView
 
 from accounts.decorators import authenticate_view
 from fleet_commerce.mixin import BaseApiMixin
+from pagination import StandardResultsPagination
 from utils.models import Customer, FileObject, Location
 
 from .serializers import (
@@ -56,6 +57,7 @@ class LocationView(BaseApiMixin, ListAPIView):
 
 class CustomerView(BaseApiMixin, ListAPIView):
     queryset = Customer.objects.all()
+    pagination_class = StandardResultsPagination
 
     @authenticate_view()
     def get(self, request, *args, **kwargs):
