@@ -43,6 +43,12 @@ class MachineView(BaseApiMixin, ListAPIView):
     search_fields = ["machine_number", "engine_number", "chasis_number", "make_and_model"]
     pagination_class = StandardResultsPagination
 
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_authenticated:
+            return Machine.objects.filter(organisation=user.organisation).order_by("-created_at")
+        return Machine.objects.none()
+
     @authenticate_view()
     def get(self, request, *args, **kwargs):
         """
@@ -51,13 +57,13 @@ class MachineView(BaseApiMixin, ListAPIView):
         pk = kwargs.get("pk", None)
         if pk:
             machine = get_object_or_404(Machine, pk=pk)
-            serializer = MachineSerializer(machine)
+            serializer = MachineSerializer(machine, context=request.query_params)
             return self.successful_get_response(serializer.data)
         else:
             queryset = self.filter_queryset(self.get_queryset())
             page = self.paginate_queryset(queryset)
             if page is not None:
-                serializer = MachineSerializer(page, many=True)
+                serializer = MachineSerializer(page, context=request.query_params, many=True)
                 return self.get_paginated_response(serializer.data)
 
             return self.get_paginated_response([])
@@ -166,7 +172,7 @@ class LocationDetailViewSet(BaseApiMixin, ListAPIView):
             machine = get_object_or_404(LocationDetail, pk=kwargs.get("pk"))
             serializer = LocationDetailSerializer(machine)
         else:
-            machine = LocationDetail.objects.filter(organisation=request.organisation)
+            machine = LocationDetail.objects.filter(organisation=request.user.organisation)
             serializer = LocationDetailSerializer(machine)
 
         return self.successful_get_response(serializer.data)

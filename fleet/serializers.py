@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from utils.mixins import DynamicFieldSerializerMixin
 from utils.serializers import FileObjectSerializer
 
 from .models import (
@@ -16,25 +17,25 @@ from .models import (
 )
 
 
-class PurchaseDetailsSerializer(serializers.ModelSerializer):
+class PurchaseDetailsSerializer(DynamicFieldSerializerMixin, serializers.ModelSerializer):
     class Meta:
         model = PurchaseDetails
         fields = "__all__"
 
 
-class LoanDetailsSerializer(serializers.ModelSerializer):
+class LoanDetailsSerializer(DynamicFieldSerializerMixin, serializers.ModelSerializer):
     class Meta:
         model = LoanDetails
         fields = "__all__"
 
 
-class LocationDetailSerializer(serializers.ModelSerializer):
+class LocationDetailSerializer(DynamicFieldSerializerMixin, serializers.ModelSerializer):
     class Meta:
         model = LocationDetail
         fields = "__all__"
 
 
-class InsuranceDetailSerializer(serializers.ModelSerializer):
+class InsuranceDetailSerializer(DynamicFieldSerializerMixin, serializers.ModelSerializer):
     insurance_document = serializers.SerializerMethodField()
 
     def get_insurance_document(self, obj):
@@ -46,37 +47,49 @@ class InsuranceDetailSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class TyreDetailSerializer(serializers.ModelSerializer):
+class TyreDetailSerializer(DynamicFieldSerializerMixin, serializers.ModelSerializer):
     class Meta:
         model = TyreDetail
         fields = "__all__"
 
 
-class FitnessDetailSerializer(serializers.ModelSerializer):
+class FitnessDetailSerializer(DynamicFieldSerializerMixin, serializers.ModelSerializer):
     class Meta:
         model = FitnessDetail
         fields = "__all__"
 
 
-class RoadTaxDetailSerializer(serializers.ModelSerializer):
+class RoadTaxDetailSerializer(DynamicFieldSerializerMixin, serializers.ModelSerializer):
     class Meta:
         model = RoadTaxDetail
         fields = "__all__"
 
 
-class PUCDetailSerializer(serializers.ModelSerializer):
+class PUCDetailSerializer(DynamicFieldSerializerMixin, serializers.ModelSerializer):
     class Meta:
         model = PUCDetail
         fields = "__all__"
 
 
-class RCBookDetailSerializer(serializers.ModelSerializer):
+class RCBookDetailSerializer(DynamicFieldSerializerMixin, serializers.ModelSerializer):
     class Meta:
         model = RCBookDetail
         fields = "__all__"
 
 
-class MachineSerializer(serializers.ModelSerializer):
+class MachineSerializer(DynamicFieldSerializerMixin, serializers.ModelSerializer):
+    dynamic_fields = {
+        "locations": "with_locations",
+        "insurances": "with_insurances",
+        "tyres": "with_tyres",
+        "fitnesses": "with_fitnesses",
+        "purchase_details": "with_purchase_details",
+        "loan_details": "with_loan_details",
+        "road_tax_detail": "with_road_tax_detail",
+        "puc_detail": "with_puc_detail",
+        "rc_book_detail": "with_rc_book_detail",
+    }
+
     field_serializers = {
         "locations": ("locationdetail_set", "LocationDetailSerializer"),
         "insurances": ("insurancedetail_set", "InsuranceDetailSerializer"),
@@ -102,7 +115,8 @@ class MachineSerializer(serializers.ModelSerializer):
             else:
                 many = False
             serializer_class = globals()[serializer_class_name]
-            return serializer_class(related_obj, many=many).data
+            if related_obj:
+                return serializer_class(related_obj, many=many).data
 
     for field_name, (related_field, serializer_class_name) in field_serializers.items():
         locals()[

@@ -1,5 +1,7 @@
 from rest_framework import serializers
 
+from utils.mixins import DynamicFieldSerializerMixin
+
 from .models import (
     Contract,
     DailyAttendance,
@@ -10,37 +12,37 @@ from .models import (
 )
 
 
-class ProductSerializer(serializers.ModelSerializer):
+class ProductSerializer(DynamicFieldSerializerMixin, serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = "__all__"
 
 
-class ContractSerializer(serializers.ModelSerializer):
+class ContractSerializer(DynamicFieldSerializerMixin, serializers.ModelSerializer):
     class Meta:
         model = Contract
         fields = "__all__"
 
 
-class ReadingTransactionSerializer(serializers.ModelSerializer):
+class ReadingTransactionSerializer(DynamicFieldSerializerMixin, serializers.ModelSerializer):
     class Meta:
         model = ReadingTransaction
         fields = "__all__"
 
 
-class DailyAttendanceSerializer(serializers.ModelSerializer):
+class DailyAttendanceSerializer(DynamicFieldSerializerMixin, serializers.ModelSerializer):
     class Meta:
         model = DailyAttendance
         fields = "__all__"
 
 
-class ReimbursementSerializer(serializers.ModelSerializer):
+class ReimbursementSerializer(DynamicFieldSerializerMixin, serializers.ModelSerializer):
     class Meta:
         model = Reimbursement
         fields = "__all__"
 
 
-class IssueReportSerializer(serializers.ModelSerializer):
+class IssueReportSerializer(DynamicFieldSerializerMixin, serializers.ModelSerializer):
     class Meta:
         model = IssueReport
         fields = "__all__"
