@@ -36,7 +36,7 @@ class WorkOrderView(BaseApiMixin, ListAPIView):
         pk = kwargs.get("pk", None)
         if pk:
             work_order = get_object_or_404(WorkOrder, pk=pk)
-            serializer = WorkOrderSerializer(work_order)
+            serializer = WorkOrderSerializer(work_order, context=request.query_params)
             return self.successful_get_response(serializer.data)
         else:
             queryset = self.filter_queryset(self.get_queryset())

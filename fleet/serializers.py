@@ -2,6 +2,7 @@ from rest_framework import serializers
 
 from utils.mixins import DynamicFieldSerializerMixin
 from utils.serializers import FileObjectSerializer
+from workorder.models import MachineResourceLinkage, WorkOrder
 
 from .models import (
     FitnessDetail,
@@ -88,6 +89,7 @@ class MachineSerializer(DynamicFieldSerializerMixin, serializers.ModelSerializer
         "road_tax_detail": "with_road_tax_detail",
         "puc_detail": "with_puc_detail",
         "rc_book_detail": "with_rc_book_detail",
+        "work_order": "with_work_order",
     }
 
     field_serializers = {
@@ -124,6 +126,13 @@ class MachineSerializer(DynamicFieldSerializerMixin, serializers.ModelSerializer
         ] = lambda self, obj, rf=related_field, scn=serializer_class_name: self.get_dynamic_field(
             obj, rf, scn
         )
+
+    def get_work_order(self, obj):
+        from workorder.serializers import WorkOrderSerializer
+
+        mrl = MachineResourceLinkage.objects.filter(machine=obj)
+        wos = WorkOrder.objects.filter(machine_resource_linkage__in=mrl)
+        return WorkOrderSerializer(wos, many=True).data
 
     class Meta:
         model = Machine
