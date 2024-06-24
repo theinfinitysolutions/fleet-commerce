@@ -15,6 +15,7 @@ from .models import DailyUpdate, FitnessReport, MachineResourceLinkage, WorkOrde
 class WorkOrderSerializer(DynamicFieldSerializerMixin, serializers.ModelSerializer):
     dynamic_fields = {
         "machine_resource_linkage": "with_machine_resource_linkage",
+        "machines": "with_machines",
     }
     billing_details = serializers.SerializerMethodField()
     customer = serializers.SerializerMethodField()
@@ -25,6 +26,16 @@ class WorkOrderSerializer(DynamicFieldSerializerMixin, serializers.ModelSerializ
         source="customer",  # The ForeignKey relationship
         write_only=True,
     )
+    machines = serializers.SerializerMethodField()
+
+    def get_machines(self, obj):
+        machine_ids = (
+            obj.machine_resource_linkage.filter(is_deleted=False)
+            .values_list("machine", flat=True)
+            .distinct()
+        )
+        machines = Machine.objects.filter(id__in=machine_ids).distinct()
+        return MachineSerializer(machines, many=True).data
 
     def get_resource_alloted(self, obj):
         resources = obj.machine_resource_linkage.filter(is_deleted=False).all()
