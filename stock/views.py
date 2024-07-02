@@ -21,6 +21,12 @@ class SparePartView(BaseApiMixin, ListAPIView):
     search_fields = ["work_order", "machine"]
     pagination_class = StandardResultsPagination
 
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_authenticated:
+            return SparePart.objects.filter(organisation=user.organisation).order_by("-created_at")
+        return SparePart.objects.none()
+
     @authenticate_view()
     def get(self, request, *args, **kwargs):
         """

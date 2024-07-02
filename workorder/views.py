@@ -28,6 +28,12 @@ class WorkOrderView(BaseApiMixin, ListAPIView):
     search_fields = ["customer", "machine", "site", "status"]
     pagination_class = StandardResultsPagination
 
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_authenticated:
+            return WorkOrder.objects.filter(organisation=user.organisation).order_by("-created_at")
+        return WorkOrder.objects.none()
+
     @authenticate_view()
     def get(self, request, *args, **kwargs):
         """

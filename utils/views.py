@@ -59,6 +59,12 @@ class CustomerView(BaseApiMixin, ListAPIView):
     queryset = Customer.objects.all()
     pagination_class = StandardResultsPagination
 
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_authenticated:
+            return Customer.objects.filter(organisation=user.organisation).order_by("-created_at")
+        return Customer.objects.none()
+
     @authenticate_view()
     def get(self, request, *args, **kwargs):
         pk = kwargs.get("pk", None)
