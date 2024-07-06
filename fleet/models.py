@@ -10,13 +10,14 @@ class Machine(OrganisationTimeStampedModel):
     make_and_model = models.CharField(max_length=100, blank=True, null=True)
     year = models.CharField(max_length=4, blank=True, null=True)
     registration_rto_office = models.CharField(max_length=100, blank=True, null=True)
-    issue_date = models.DateField()
-    valid_upto = models.DateField()
+    issue_date = models.DateField(blank=True, null=True)
+    valid_upto = models.DateField(blank=True, null=True)
     registered_owner = models.CharField(max_length=100, blank=True, null=True)
     account_billing_hirer_company = models.CharField(max_length=100, blank=True, null=True)
     asset_type = models.CharField(max_length=100, blank=True, null=True)
     machine_type = models.CharField(max_length=100, blank=True, null=True)
     vehicle_image = models.ForeignKey("utils.FileObject", null=True, on_delete=models.SET_NULL)
+
 
 class PurchaseDetails(OrganisationTimeStampedModel):
     machine = models.OneToOneField(Machine, on_delete=models.CASCADE)
