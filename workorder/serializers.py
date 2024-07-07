@@ -7,7 +7,7 @@ from fleet.models import Machine
 from fleet.serializers import MachineSerializer
 from utils.mixins import DynamicFieldSerializerMixin
 from utils.models import Customer
-from utils.serializers import CustomerSerializer
+from utils.serializers import CustomerSerializer, LocationSerializer
 
 from .models import DailyUpdate, FitnessReport, MachineResourceLinkage, WorkOrder
 
@@ -27,6 +27,13 @@ class WorkOrderSerializer(DynamicFieldSerializerMixin, serializers.ModelSerializ
         write_only=True,
     )
     machines = serializers.SerializerMethodField()
+    location_obj = serializers.SerializerMethodField()
+
+    def get_location_obj(self, obj):
+        location = obj.location
+        if location and not location.is_deleted:
+            return LocationSerializer(location).data
+        return None
 
     def get_machines(self, obj):
         machine_ids = (
