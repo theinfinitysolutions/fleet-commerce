@@ -55,7 +55,7 @@ class LoanDetails(OrganisationTimeStampedModel):
 class LocationDetail(OrganisationTimeStampedModel):
     machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
     location = models.ForeignKey("utils.Location", on_delete=models.CASCADE)
-    supervisor = models.CharField(max_length=100, blank=True, null=True)
+    supervisor = models.ForeignKey("accounts.User", on_delete=models.CASCADE)
     from_date = models.DateField(blank=True, null=True)
     remarks = models.TextField(blank=True, null=True)
 

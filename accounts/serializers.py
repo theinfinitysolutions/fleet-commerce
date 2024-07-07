@@ -54,3 +54,16 @@ class UserSerializer(DynamicFieldSerializerMixin, serializers.ModelSerializer):
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)
         return user
+
+
+class BasicUserSerializer(DynamicFieldSerializerMixin, serializers.ModelSerializer):
+    user_organisation = serializers.SerializerMethodField()
+
+    def get_user_organisation(self, obj):
+        if obj.organisation:
+            return OrganisationSerializer(obj.organisation).data
+
+    class Meta:
+        model = User
+        fields = ("first_name", "last_name", "email", "phone_number", "user_organisation", "roles")
+        extra_kwargs = {"password": {"write_only": True}}

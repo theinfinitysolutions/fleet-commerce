@@ -1,7 +1,8 @@
 from rest_framework import serializers
 
+from accounts.serializers import BasicUserSerializer, UserSerializer
 from utils.mixins import DynamicFieldSerializerMixin
-from utils.serializers import FileObjectSerializer
+from utils.serializers import FileObjectSerializer, LocationSerializer
 from workorder.models import MachineResourceLinkage, WorkOrder
 
 from .models import (
@@ -31,6 +32,19 @@ class LoanDetailsSerializer(DynamicFieldSerializerMixin, serializers.ModelSerial
 
 
 class LocationDetailSerializer(DynamicFieldSerializerMixin, serializers.ModelSerializer):
+    location_obj = serializers.SerializerMethodField()
+    supervisor_obj = serializers.SerializerMethodField()
+
+    def get_supervisor_obj(self, obj):
+        if obj.supervisor:
+            return BasicUserSerializer(obj.supervisor).data
+        return None
+
+    def get_location_obj(self, obj):
+        if obj.location:
+            return LocationSerializer(obj.location).data
+        return None
+
     class Meta:
         model = LocationDetail
         fields = "__all__"

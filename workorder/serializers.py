@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from accounts.models import User
-from accounts.serializers import UserSerializer
+from accounts.serializers import BasicUserSerializer, UserSerializer
 from billing.serializers import InvoiceSerializer
 from fleet.models import Machine
 from fleet.serializers import MachineSerializer
@@ -93,13 +93,13 @@ class DailyUpdateSerializer(DynamicFieldSerializerMixin, serializers.ModelSerial
     def get_driver(self, obj):
         driver = obj.driver
         if not driver or not driver.is_deleted:
-            return UserSerializer(driver).data
+            return BasicUserSerializer(driver).data
         return None
 
     def get_helper(self, obj):
         helper = obj.helper
         if not helper or not helper.is_deleted:
-            return UserSerializer(helper).data
+            return BasicUserSerializer(helper).data
         return None
 
     class Meta:
@@ -142,7 +142,7 @@ class FitnessReportSerializer(DynamicFieldSerializerMixin, serializers.ModelSeri
 
 class MachineResourceLinkageSerializer(DynamicFieldSerializerMixin, serializers.ModelSerializer):
     machine = MachineSerializer()
-    resource = UserSerializer()
+    resource = BasicUserSerializer()
 
     class Meta:
         model = MachineResourceLinkage
