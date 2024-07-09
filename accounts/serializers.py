@@ -65,5 +65,14 @@ class BasicUserSerializer(DynamicFieldSerializerMixin, serializers.ModelSerializ
 
     class Meta:
         model = User
-        fields = ("first_name", "last_name", "email", "phone_number", "user_organisation", "roles")
+        fields = (
+            "id",
+            "first_name",
+            "username",
+            "last_name",
+            "email",
+            "phone_number",
+            "user_organisation",
+            "roles",
+        )
         extra_kwargs = {"password": {"write_only": True}}
