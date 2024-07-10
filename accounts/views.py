@@ -78,10 +78,11 @@ class UserListView(BaseApiMixin, ListAPIView):
 
     def get_queryset(self):
         user = self.request.user
+        user_qs = User.objects.filter(is_deleted=False)
         if user.has_role(Role.SUPER_ADMIN):
-            return User.objects.all()
+            return user_qs.all()
         elif user.has_role(Role.ORGANISATION_ADMIN):
-            return User.objects.filter(organisation=user.organisation)
+            return user_qs.filter(organisation=user.organisation)
         else:
             return User.objects.none()
 
