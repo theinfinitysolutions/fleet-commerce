@@ -23,20 +23,20 @@ class PurchaseDetails(OrganisationTimeStampedModel):
     machine = models.OneToOneField(Machine, on_delete=models.CASCADE)
     bill_no = models.CharField(max_length=100)
     bill_date = models.DateField()
-    total_bill_amount = models.DecimalField(max_digits=10, decimal_places=3)
+    total_bill_amount = models.DecimalField(max_digits=12, decimal_places=3)
     vendor_name = models.CharField(max_length=100)
     taxable_amount_18_percent = models.DecimalField(
-        max_digits=10, decimal_places=2, blank=True, null=True
+        max_digits=12, decimal_places=3, blank=True, null=True
     )
-    cgst_18_percent = models.DecimalField(max_digits=10, decimal_places=3, blank=True, null=True)
-    sgst_18_percent = models.DecimalField(max_digits=10, decimal_places=3, blank=True, null=True)
-    igst_18_percent = models.DecimalField(max_digits=10, decimal_places=3, blank=True, null=True)
+    cgst_18_percent = models.DecimalField(max_digits=12, decimal_places=3, blank=True, null=True)
+    sgst_18_percent = models.DecimalField(max_digits=12, decimal_places=3, blank=True, null=True)
+    igst_18_percent = models.DecimalField(max_digits=12, decimal_places=3, blank=True, null=True)
     taxable_amount_28_percent = models.DecimalField(
-        max_digits=10, decimal_places=2, blank=True, null=True
+        max_digits=12, decimal_places=3, blank=True, null=True
     )
-    cgst_28_percent = models.DecimalField(max_digits=10, decimal_places=3, blank=True, null=True)
-    sgst_28_percent = models.DecimalField(max_digits=10, decimal_places=3, blank=True, null=True)
-    igst_28_percent = models.DecimalField(max_digits=10, decimal_places=3, blank=True, null=True)
+    cgst_28_percent = models.DecimalField(max_digits=12, decimal_places=3, blank=True, null=True)
+    sgst_28_percent = models.DecimalField(max_digits=12, decimal_places=3, blank=True, null=True)
+    igst_28_percent = models.DecimalField(max_digits=12, decimal_places=3, blank=True, null=True)
 
 
 class LoanDetails(OrganisationTimeStampedModel):
