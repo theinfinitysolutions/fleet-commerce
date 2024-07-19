@@ -8,11 +8,9 @@ from fleet_commerce.mixin import AuthorTimeStampedModel, OrganisationTimeStamped
 
 @receiver(pre_save, sender=AuthorTimeStampedModel)
 def author_pre_save_handler(sender, instance, **kwargs):
-    print("Author handler")
     if not instance.pk:
         # Instance was created
         user = get_current_user()
-        print(user)
         if isinstance(user, User):
             instance.created_by = user
 
@@ -20,10 +18,13 @@ def author_pre_save_handler(sender, instance, **kwargs):
 @receiver(pre_save, sender=OrganisationTimeStampedModel)
 def organisation_pre_save_handler(sender, instance, **kwargs):
     if not instance.pk:
-        # Instance was created
         organisation = get_current_organisation()
         if isinstance(organisation, Organisation):
             instance.organisation = organisation
+
+        user = get_current_user()
+        if isinstance(user, User):
+            instance.created_by = user
 
 
 # Connect signals for all subclasses of AuthorTimeStampedModel

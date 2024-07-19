@@ -7,27 +7,28 @@ import magic
 from django.core.files.storage import default_storage
 from rest_framework import serializers
 
+from utils.mixins import DynamicFieldSerializerMixin
 from utils.utils import S3Utils
 
-from .models import FileObject, Location, Customer
+from .models import Customer, FileObject, Location
 
 
-class FileObjectSerializer(serializers.ModelSerializer):
-    #s3_url = serializers.SerializerMethodField()
+class FileObjectSerializer(DynamicFieldSerializerMixin, serializers.ModelSerializer):
+    # s3_url = serializers.SerializerMethodField()
     cloudfront_url = serializers.SerializerMethodField()
 
     class Meta:
         model = FileObject
         fields = "__all__"
 
-    #def get_s3_url(self, obj):
-        #return obj.s3_url
-    
+    # def get_s3_url(self, obj):
+    # return obj.s3_url
+
     def get_cloudfront_url(self, obj):
         return obj.cloudfront_url
 
 
-class CreateFileSerializer(serializers.ModelSerializer):
+class CreateFileSerializer(DynamicFieldSerializerMixin, serializers.ModelSerializer):
     file = serializers.FileField()
 
     class Meta:
@@ -56,7 +57,7 @@ class CreateFileSerializer(serializers.ModelSerializer):
         # Upload the file object to S3 using the content in memory
         file_stream = BytesIO(file_content)
         s3_client.upload_fileobj(file_stream, aws_s3_bucket, key)
-       
+
         file_obj = FileObject.objects.create(
             original_file_name=file.name,
             mime_type=file_mime,
@@ -68,12 +69,13 @@ class CreateFileSerializer(serializers.ModelSerializer):
         return file_obj
 
 
-class LocationSerializer(serializers.ModelSerializer):
+class LocationSerializer(DynamicFieldSerializerMixin, serializers.ModelSerializer):
     class Meta:
         model = Location
         fields = "__all__"
 
-class CustomerSerializer(serializers.ModelSerializer):
+
+class CustomerSerializer(DynamicFieldSerializerMixin, serializers.ModelSerializer):
     class Meta:
         model = Customer
         fields = "__all__"

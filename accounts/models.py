@@ -20,7 +20,7 @@ class DocumentDetails(AuthorTimeStampedModel):
     document_type = models.CharField(max_length=100, null=True)
 
 
-class User(AbstractUser, AuthorTimeStampedModel):
+class User(AbstractUser, TimeStampedModel):
     name = models.CharField(max_length=100, null=True)
     role = models.CharField(max_length=255, null=True)
     phone_number = models.CharField(max_length=17, blank=True, null=True)

@@ -5,12 +5,19 @@ from rest_framework.filters import SearchFilter
 from rest_framework.generics import ListAPIView
 
 from accounts.decorators import authenticate_view
+from accounts.models import User
+from fleet.models import Machine
 from fleet_commerce.mixin import BaseApiMixin
 from pagination import StandardResultsPagination
 
 from .filters import WorkOrderFilter
-from .models import WorkOrder, DailyUpdate, FitnessReport
-from .serializers import WorkOrderSerializer, DailyUpdateSerializer, FitnessReportSerializer
+from .models import DailyUpdate, FitnessReport, MachineResourceLinkage, WorkOrder
+from .serializers import (
+    DailyUpdateSerializer,
+    FitnessReportSerializer,
+    MachineResourceLinkageSerializer,
+    WorkOrderSerializer,
+)
 
 
 class WorkOrderView(BaseApiMixin, ListAPIView):
@@ -21,6 +28,12 @@ class WorkOrderView(BaseApiMixin, ListAPIView):
     search_fields = ["customer", "machine", "site", "status"]
     pagination_class = StandardResultsPagination
 
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_authenticated:
+            return WorkOrder.objects.filter(organisation=user.organisation).order_by("-created_at")
+        return WorkOrder.objects.none()
+
     @authenticate_view()
     def get(self, request, *args, **kwargs):
         """
@@ -29,7 +42,7 @@ class WorkOrderView(BaseApiMixin, ListAPIView):
         pk = kwargs.get("pk", None)
         if pk:
             work_order = get_object_or_404(WorkOrder, pk=pk)
-            serializer = WorkOrderSerializer(work_order)
+            serializer = WorkOrderSerializer(work_order, context=request.query_params)
             return self.successful_get_response(serializer.data)
         else:
             queryset = self.filter_queryset(self.get_queryset())
@@ -64,6 +77,23 @@ class WorkOrderView(BaseApiMixin, ListAPIView):
             return self.successful_post_response(serializer.data)
         return self.error_response(errors=serializer.errors)
 
+
+class AddWorkOrderMachineResource(BaseApiMixin, ListAPIView):
+    @authenticate_view()
+    def post(self, request, *args, **kwargs):
+        """
+        Adds a new MachineResourceLinkage instance from provided data.
+        """
+        work_order = get_object_or_404(WorkOrder, pk=request.data.get("work_order"))
+        machine = get_object_or_404(Machine, pk=request.data.get("machine"))
+        resource = get_object_or_404(User, pk=request.data.get("resource"))
+
+        linkage = MachineResourceLinkage.objects.create(machine=machine, resource=resource)
+        work_order.machine_resource_linkage.add(linkage)
+        serializer = MachineResourceLinkageSerializer(linkage)
+        return self.successful_post_response(serializer.data)
+
+
 class DailyUpdateView(BaseApiMixin, ListAPIView):
     @authenticate_view()
     def get(self, request, *args, **kwargs):
@@ -74,11 +104,11 @@ class DailyUpdateView(BaseApiMixin, ListAPIView):
             daily_update = get_object_or_404(DailyUpdate, pk=kwargs.get("pk"))
             serializer = DailyUpdateSerializer(daily_update)
         else:
-            daily_update = DailyUpdate.objects.filter(organisation=request.organisation)
+            daily_update = DailyUpdate.objects.filter(organisation=request.user.organisation)
             serializer = DailyUpdateSerializer(daily_update, many=True)
 
         return self.successful_get_response(serializer.data)
-    
+
     @authenticate_view()
     def post(self, request, *args, **kwargs):
         """
@@ -89,7 +119,7 @@ class DailyUpdateView(BaseApiMixin, ListAPIView):
             serializer.save()
             return self.successful_post_response(serializer.data)
         return self.error_response(errors=serializer.errors)
-    
+
     @authenticate_view()
     def patch(self, request, *args, **kwargs):
         """
@@ -103,6 +133,7 @@ class DailyUpdateView(BaseApiMixin, ListAPIView):
             return self.successful_post_response(serializer.data)
         return self.error_response(errors=serializer.errors)
 
+
 class FitnessReportView(BaseApiMixin, ListAPIView):
     @authenticate_view()
     def get(self, request, *args, **kwargs):
@@ -113,11 +144,11 @@ class FitnessReportView(BaseApiMixin, ListAPIView):
             fitness_report = get_object_or_404(FitnessReport, pk=kwargs.get("pk"))
             serializer = FitnessReportSerializer(fitness_report)
         else:
-            fitness_report = FitnessReport.objects.filter(organisation=request.organisation)
+            fitness_report = FitnessReport.objects.filter(organisation=request.user.organisation)
             serializer = FitnessReportSerializer(fitness_report, many=True)
 
         return self.successful_get_response(serializer.data)
-    
+
     @authenticate_view()
     def post(self, request, *args, **kwargs):
         """
@@ -128,7 +159,7 @@ class FitnessReportView(BaseApiMixin, ListAPIView):
             serializer.save()
             return self.successful_post_response(serializer.data)
         return self.error_response(errors=serializer.errors)
-    
+
     @authenticate_view()
     def patch(self, request, *args, **kwargs):
         """

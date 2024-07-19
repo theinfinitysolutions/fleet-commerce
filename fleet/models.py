@@ -10,32 +10,33 @@ class Machine(OrganisationTimeStampedModel):
     make_and_model = models.CharField(max_length=100, blank=True, null=True)
     year = models.CharField(max_length=4, blank=True, null=True)
     registration_rto_office = models.CharField(max_length=100, blank=True, null=True)
-    issue_date = models.DateField()
-    valid_upto = models.DateField()
+    issue_date = models.DateField(blank=True, null=True)
+    valid_upto = models.DateField(blank=True, null=True)
     registered_owner = models.CharField(max_length=100, blank=True, null=True)
     account_billing_hirer_company = models.CharField(max_length=100, blank=True, null=True)
     asset_type = models.CharField(max_length=100, blank=True, null=True)
     machine_type = models.CharField(max_length=100, blank=True, null=True)
     vehicle_image = models.ForeignKey("utils.FileObject", null=True, on_delete=models.SET_NULL)
 
+
 class PurchaseDetails(OrganisationTimeStampedModel):
     machine = models.OneToOneField(Machine, on_delete=models.CASCADE)
     bill_no = models.CharField(max_length=100)
     bill_date = models.DateField()
-    total_bill_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    total_bill_amount = models.DecimalField(max_digits=12, decimal_places=3)
     vendor_name = models.CharField(max_length=100)
     taxable_amount_18_percent = models.DecimalField(
-        max_digits=10, decimal_places=2, blank=True, null=True
+        max_digits=12, decimal_places=3, blank=True, null=True
     )
-    cgst_18_percent = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
-    sgst_18_percent = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
-    igst_18_percent = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    cgst_18_percent = models.DecimalField(max_digits=12, decimal_places=3, blank=True, null=True)
+    sgst_18_percent = models.DecimalField(max_digits=12, decimal_places=3, blank=True, null=True)
+    igst_18_percent = models.DecimalField(max_digits=12, decimal_places=3, blank=True, null=True)
     taxable_amount_28_percent = models.DecimalField(
-        max_digits=10, decimal_places=2, blank=True, null=True
+        max_digits=12, decimal_places=3, blank=True, null=True
     )
-    cgst_28_percent = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
-    sgst_28_percent = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
-    igst_28_percent = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    cgst_28_percent = models.DecimalField(max_digits=12, decimal_places=3, blank=True, null=True)
+    sgst_28_percent = models.DecimalField(max_digits=12, decimal_places=3, blank=True, null=True)
+    igst_28_percent = models.DecimalField(max_digits=12, decimal_places=3, blank=True, null=True)
 
 
 class LoanDetails(OrganisationTimeStampedModel):
@@ -54,7 +55,7 @@ class LoanDetails(OrganisationTimeStampedModel):
 class LocationDetail(OrganisationTimeStampedModel):
     machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
     location = models.ForeignKey("utils.Location", on_delete=models.CASCADE)
-    supervisor = models.CharField(max_length=100, blank=True, null=True)
+    supervisor = models.ForeignKey("accounts.User", on_delete=models.CASCADE)
     from_date = models.DateField(blank=True, null=True)
     remarks = models.TextField(blank=True, null=True)
 

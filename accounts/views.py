@@ -14,6 +14,7 @@ from .decorators import authenticate_view
 from .models import BankDetails, DocumentDetails, Organisation, Role, User
 from .serializers import (
     BankDetailsSerializer,
+    BasicUserSerializer,
     DocumentDetailsSerializer,
     OrganisationSerializer,
     UserSerializer,
@@ -69,7 +70,7 @@ class AuthenticatedUserView(BaseApiMixin, ListAPIView):
 
 
 class UserListView(BaseApiMixin, ListAPIView):
-    serializer_class = UserSerializer
+    serializer_class = BasicUserSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter]
     filterset_class = UserFilter
     search_fields = ["name", "email", "aadhar_number", "pan_number", "role"]
@@ -77,10 +78,11 @@ class UserListView(BaseApiMixin, ListAPIView):
 
     def get_queryset(self):
         user = self.request.user
+        user_qs = User.objects.filter(is_deleted=False)
         if user.has_role(Role.SUPER_ADMIN):
-            return User.objects.all()
+            return user_qs.all()
         elif user.has_role(Role.ORGANISATION_ADMIN):
-            return User.objects.filter(organisation=user.organisation)
+            return user_qs.filter(organisation=user.organisation)
         else:
             return User.objects.none()
 
@@ -89,7 +91,7 @@ class UserListView(BaseApiMixin, ListAPIView):
         queryset = self.filter_queryset(self.get_queryset())
         page = self.paginate_queryset(queryset)
         if page is not None:
-            serializer = UserSerializer(page, many=True)
+            serializer = BasicUserSerializer(page, many=True)
             return self.get_paginated_response(serializer.data)
 
         return self.get_paginated_response([])

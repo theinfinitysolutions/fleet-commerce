@@ -23,11 +23,13 @@ def authenticate_view(role=None):
                 )
 
             try:
-                auth_token = auth[1].decode("utf-8")  # Ensure to decode from bytes to string
-                authenticator = BearerTokenAuthentication()
-                user, token = authenticator.authenticate_credentials(auth_token)
-                _request.user = user  # Set the user in the original Django HttpRequest
-                _request.organisation = user.organisation
+                if not hasattr(_request, "user"):
+                    auth_token = auth[1].decode("utf-8")  # Ensure to decode from bytes to string
+                    authenticator = BearerTokenAuthentication()
+                    user, token = authenticator.authenticate_credentials(auth_token)
+                    _request.user = user  # Set the user in the original Django HttpRequest
+                    _request.organisation = user.organisation
+                user = _request.user
                 if role and not user.has_role(role):
                     return JsonResponse(
                         {"detail": "You do not have permission to perform this action."}, status=403

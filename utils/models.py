@@ -1,5 +1,7 @@
-from django.db import models
 import os
+
+from django.db import models
+
 from fleet_commerce.mixin import AuthorTimeStampedModel, OrganisationTimeStampedModel
 
 
@@ -20,6 +22,9 @@ class FileObject(AuthorTimeStampedModel):
     @property
     def cloudfront_url(self):
         cloudfront_url = os.getenv("CLOUDFRONT_URL")
+        if cloudfront_url is None:
+            return self.s3_url
+
         return f"{cloudfront_url}/{self.s3_key}"
 
 
@@ -32,6 +37,7 @@ class Location(OrganisationTimeStampedModel):
     state = models.CharField(max_length=100, blank=True, null=True)
     country = models.CharField(max_length=100, blank=True, null=True)
     pin_code = models.CharField(max_length=100, blank=True, null=True)
+
 
 class Customer(OrganisationTimeStampedModel):
     contact_name = models.CharField(max_length=100, blank=True, null=True)
